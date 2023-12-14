@@ -1,0 +1,26 @@
+Call:
+lm(formula = price ~ horsepower + engine_location + engine_size + 
+    engine_type, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9888.6 -1329.6   -58.6  1345.7 11922.5 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         -1.229e+04  1.610e+03  -7.635 1.07e-12 ***
+horsepower           3.744e+01  1.291e+01   2.900  0.00417 ** 
+engine_locationrear  7.688e+03  2.362e+03   3.256  0.00134 ** 
+engine_size          9.675e+00  7.062e-01  13.700  < 2e-16 ***
+engine_typel         2.802e+03  1.419e+03   1.975  0.04971 *  
+engine_typeohc       1.735e+03  1.084e+03   1.600  0.11128    
+engine_typeohcf      6.262e+02  1.434e+03   0.437  0.66283    
+engine_typeohcv     -3.312e+03  1.407e+03  -2.354  0.01962 *  
+engine_typerotor     9.720e+03  2.022e+03   4.808 3.10e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3286 on 190 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.8372,	Adjusted R-squared:  0.8304 
+F-statistic: 122.2 on 8 and 190 DF,  p-value: < 2.2e-16
