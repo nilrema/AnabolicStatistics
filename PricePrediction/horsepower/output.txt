@@ -1,0 +1,18 @@
+Call:
+lm(formula = price ~ horsepower, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10180.1  -2262.0   -471.1   1779.5  18276.2 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -4562.175    974.995  -4.679 5.35e-06 ***
+horsepower    172.206      8.866  19.424  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4685 on 197 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.657,	Adjusted R-squared:  0.6552 
+F-statistic: 377.3 on 1 and 197 DF,  p-value: < 2.2e-16
