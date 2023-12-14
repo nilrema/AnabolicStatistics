@@ -1,0 +1,51 @@
+Call:
+lm(formula = price ~ horsepower + engine_size + as.factor(engine_type) + 
+    as.factor(num_of_cylinders) + bore + stroke + compression_ratio + 
+    peak_rpm, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6353.2  -979.6    -2.6  1043.0  8501.4 
+
+Coefficients:
+                                    Estimate Std. Error t value
+(Intercept)                        4.588e+03  5.468e+03   0.839
+horsepower                         7.290e+01  1.291e+01   5.645
+engine_size                        8.252e+00  1.267e+00   6.514
+as.factor(engine_type)l            4.349e+03  1.151e+03   3.779
+as.factor(engine_type)ohc          4.201e+03  8.395e+02   5.004
+as.factor(engine_type)ohcf         1.104e+03  1.145e+03   0.964
+as.factor(engine_type)ohcv        -6.443e+03  1.195e+03  -5.391
+as.factor(num_of_cylinders)five   -9.335e+03  2.770e+03  -3.370
+as.factor(num_of_cylinders)four   -1.342e+04  3.132e+03  -4.285
+as.factor(num_of_cylinders)six    -9.762e+03  2.168e+03  -4.502
+as.factor(num_of_cylinders)three  -9.967e+03  4.449e+03  -2.240
+as.factor(num_of_cylinders)twelve -2.161e+04  3.179e+03  -6.797
+bore                              -1.051e+02  5.955e+02  -0.176
+stroke                            -2.187e+03  3.364e+02  -6.500
+compression_ratio                  3.416e+02  5.432e+01   6.289
+peak_rpm                           1.725e+00  5.213e-01   3.310
+                                  Pr(>|t|)    
+(Intercept)                       0.402526    
+horsepower                        6.38e-08 ***
+engine_size                       7.19e-10 ***
+as.factor(engine_type)l           0.000214 ***
+as.factor(engine_type)ohc         1.34e-06 ***
+as.factor(engine_type)ohcf        0.336350    
+as.factor(engine_type)ohcv        2.19e-07 ***
+as.factor(num_of_cylinders)five   0.000922 ***
+as.factor(num_of_cylinders)four   2.98e-05 ***
+as.factor(num_of_cylinders)six    1.21e-05 ***
+as.factor(num_of_cylinders)three  0.026303 *  
+as.factor(num_of_cylinders)twelve 1.53e-10 ***
+bore                              0.860114    
+stroke                            7.72e-10 ***
+compression_ratio                 2.38e-09 ***
+peak_rpm                          0.001129 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2451 on 179 degrees of freedom
+  (6 observations deleted due to missingness)
+Multiple R-squared:  0.9146,	Adjusted R-squared:  0.9074 
+F-statistic: 127.7 on 15 and 179 DF,  p-value: < 2.2e-16
