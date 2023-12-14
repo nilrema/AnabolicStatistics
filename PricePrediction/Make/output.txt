@@ -1,0 +1,37 @@
+Call:
+lm(formula = price ~ make, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9688.7 -2131.5  -354.4  1409.0 15196.2 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       15498.333   2191.253   7.073 3.30e-11 ***
+makeAudi           2360.833   2683.726   0.880  0.38021    
+makeBMW           10620.417   2569.472   4.133 5.49e-05 ***
+makeChevrolet     -9491.333   3098.900  -3.063  0.00253 ** 
+makeDodge         -7622.889   2530.241  -3.013  0.00296 ** 
+makeHonda         -7313.641   2430.977  -3.009  0.00300 ** 
+makeIsuzu         -6581.833   3464.676  -1.900  0.05908 .  
+makeJaguar        19101.667   3098.900   6.164 4.58e-09 ***
+makeMazda         -4845.451   2376.748  -2.039  0.04295 *  
+makeMercedes-Benz 18148.667   2569.472   7.063 3.48e-11 ***
+makeMercury        1004.667   4382.507   0.229  0.81894    
+makeMitsubishi    -6258.564   2430.977  -2.575  0.01085 *  
+makeNissan        -5082.667   2366.824  -2.147  0.03310 *  
+makePeugeot          -9.242   2472.067  -0.004  0.99702    
+makePlymouth      -7534.905   2619.049  -2.877  0.00450 ** 
+makePorsche       15902.167   2898.756   5.486 1.39e-07 ***
+makeRenault       -5903.333   3464.676  -1.704  0.09014 .  
+makeSaab           -275.000   2683.726  -0.102  0.91850    
+makeSubaru        -6957.083   2449.896  -2.840  0.00504 ** 
+makeToyota        -5612.521   2291.668  -2.449  0.01528 *  
+makeVolkswagen    -5420.833   2449.896  -2.213  0.02818 *  
+makeVolvo          2564.848   2472.067   1.038  0.30089    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3795 on 179 degrees of freedom
+Multiple R-squared:  0.7959,	Adjusted R-squared:  0.7719 
+F-statistic: 33.23 on 21 and 179 DF,  p-value: < 2.2e-16
