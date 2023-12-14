@@ -1,0 +1,33 @@
+Call:
+lm(formula = price ~ horsepower + engine_size + num_of_cylinders + 
+    fuel_system, data = data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+ -8737  -1338      0   1316  13792 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            -1.100e+03  3.546e+03  -0.310  0.75677    
+horsepower              9.280e+01  1.649e+01   5.626 6.80e-08 ***
+engine_size             5.452e+00  9.809e-01   5.558 9.53e-08 ***
+num_of_cylindersfive   -3.109e+03  2.432e+03  -1.278  0.20283    
+num_of_cylindersfour   -7.148e+03  2.485e+03  -2.877  0.00450 ** 
+num_of_cylinderssix    -7.087e+03  2.125e+03  -3.335  0.00103 ** 
+num_of_cylindersthree  -3.505e+03  4.245e+03  -0.826  0.41008    
+num_of_cylinderstwelve -1.648e+04  3.667e+03  -4.495 1.23e-05 ***
+num_of_cylinderstwo    -3.078e+03  4.415e+03  -0.697  0.48656    
+fuel_system2bbl        -1.505e+02  1.021e+03  -0.147  0.88298    
+fuel_system4bbl         6.971e+02  3.742e+03   0.186  0.85243    
+fuel_systemidi          3.314e+03  1.273e+03   2.603  0.01001 *  
+fuel_systemmfi         -6.178e+03  3.367e+03  -1.835  0.06814 .  
+fuel_systemmpfi         1.478e+02  1.109e+03   0.133  0.89406    
+fuel_systemspdi        -3.849e+03  1.529e+03  -2.517  0.01270 *  
+fuel_systemspfi         3.135e+02  3.259e+03   0.096  0.92348    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3110 on 183 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.8595,	Adjusted R-squared:  0.848 
+F-statistic: 74.66 on 15 and 183 DF,  p-value: < 2.2e-16
