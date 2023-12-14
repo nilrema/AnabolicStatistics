@@ -1,0 +1,21 @@
+Call:
+lm(formula = price ~ city_L_100km + highway_L_100km + peak_rpm, 
+    data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9262.2 -3064.7  -351.8  1878.3 18031.5 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      325.1097  4089.8995   0.079 0.936724    
+city_L_100km    1526.5314   482.9152   3.161 0.001823 ** 
+highway_L_100km 1451.6345   660.8091   2.197 0.029217 *  
+peak_rpm          -2.7238     0.7266  -3.749 0.000234 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4604 on 195 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.6721,	Adjusted R-squared:  0.6671 
+F-statistic: 133.3 on 3 and 195 DF,  p-value: < 2.2e-16
