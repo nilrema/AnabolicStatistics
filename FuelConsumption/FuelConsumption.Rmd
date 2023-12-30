@@ -1,0 +1,200 @@
+---
+title: "Potrošnja goriva po regijama"
+author: "Ivan Skukan"
+output:
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Pitanje 
+**Postoje li razlike u potrošnji automobila prema regiji kojoj pripada proizvođač?**
+
+#Uvod 
+Da odgovorimo na ovo pitanje, moramo analizirati podatke potrošnje
+goriva po više od 2 kontinenta, a kasnije i po manjim regijama (sjeverna
+Europa, zapadna Europa...). Zbog činjenice da imamo više od 2 regije,
+analiza varijance (ANOVA) će biti naš odabir modeliranja. Prvo ćemo
+učitati podatke i onda pretvoriti relevantne stupce u faktore kako bi
+izbjegli potencijalne greške u programiranju Učitavanje i čiščenje
+podataka:
+
+```{r}
+path <- "car_specifications.csv"
+data <- read.csv(path)
+
+data$continent = as.factor(data$continent)
+data$country = as.factor(data$country)
+head(data)
+```
+
+#lillie 
+**Testiranje normalnosti** 
+Prije nego krenemo sa analizom
+varijance, moramo prvo provjeriti normalnost podataka. Zanimaju nas
+tablice za potrošnju goriva u gradu i na autocesti. Koristit ćemo
+Lilliefors test koji se temelji na Kolmogorov-Smirnov testu. Postavljamo
+hipoteze:
+$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ nemaju\ normalnu\ distribuciju\\
+H1: \neg H0$$
+
+Provedimo test:
+
+```{r}
+require(nortest) #potrebna biblioteka
+
+lillie.test(data$city.L.100km)
+lillie.test(data$highway.L.100km)
+```
+Za oba testa smo dobili jako malu p-vrijednost. Možemo uvjereno odbaciti
+H0 i zaključiti da su podaci normalno distribuirani.
+
+Prikažimo i neke korisne vizualizacije za provjeru normalnosti.
+Histogrami i Q-Q plotovi(prvi histogram/Q-Q je za gradove, drugi za autoceste):
+```{r}
+#hist za svaki test
+hist(data$city.L.100km)
+hist(data$highway.L.100km)
+
+#qq #probaj koristit i za anovu!!!!
+qqnorm(data$city.L.100km)
+qqline(data$city.L.100km)
+
+
+qqnorm(data$highway.L.100km)
+qqline(data$highway.L.100km)
+
+
+```
+Vidimo kako podaci u Q-Q plotu prate pravac, što opet pokazuje normalnost podataka.
+
+Sada treba provesti isti test, ali za sve kontinente. Prvo postavljamo
+hipoteze:
+$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ nemaju\\ normalnu\ distribuciju\ po\ kontinentima\\
+H1: \neg H0$$
+
+Pokrenimo kod:
+
+```{r}
+continents = unique(data$continent) #lista svih kontinenta
+for (continent in continents) {
+  print(paste("For continent:",continent))
+  print(lillie.test(data$city.L.100km[data$continent == continent]))
+  print(lillie.test(data$highway.L.100km[data$continent == continent]))
+}
+```
+
+Vidimo da smo i po kontinentima dobili male p-vrijednosti. Opet
+odbacujemo H0 i zaključujemo da su podaci za potrošnju goriva normalno
+distribuirani i po kontinentima.
+
+Histogrami:
+```{r}
+  hist(data$highway.L.100km[data$continent == "Asia"])
+  hist(data$city.L.100km[data$continent == "Asia"])
+  hist(data$highway.L.100km[data$continent == "North America"])
+  hist(data$city.L.100km[data$continent == "North America"])
+  hist(data$highway.L.100km[data$continent == "Europe"])
+  hist(data$city.L.100km[data$continent == "Europe"])
+```
+
+Q-Q:
+```{r}
+qqnorm(data$highway.L.100km[data$continent == "Asia"],main="Asia, highways")
+qqline(data$highway.L.100km[data$continent == "Asia"])
+qqnorm(data$city.L.100km[data$continent == "Asia"],main = "Asia, cities")
+qqline(data$city.L.100km[data$continent == "Asia"])
+qqnorm(data$highway.L.100km[data$continent == "North America"],main = "NA,highways")
+qqline(data$highway.L.100km[data$continent == "North America"])
+qqnorm(data$city.L.100km[data$continent == "North America"],main = "NA, cities")
+qqline(data$city.L.100km[data$continent == "North America"])
+qqnorm(data$highway.L.100km[data$continent == "Europe"],main = "Europe, highways")
+qqline(data$highway.L.100km[data$continent == "Europe"])
+qqnorm(data$city.L.100km[data$continent == "Europe"],main = "Europe, cities")
+qqline(data$city.L.100km[data$continent == "Europe"])
+```
+#Bartlett 
+Osim normalnosti, želimo provjeriti da je varijanca približno
+jednaka za sve skupove podataka. Loše poklapanje varijanci može dati
+loše rezultate ANOVA testa. Provjerit ćemo varijance sa Bartlett testom.
+Postavljamo hipoteze (postavimo iste hipoteze za gradove i autoceste):
+$$ \begin{aligned}
+  H_0 & : \sigma_1^2 = \sigma_2^2 = \ldots = \sigma_k^2 \\
+  H_1 & : \text{barem dvije varijance nisu iste}.
+\end{aligned} $$
+
+```{r}
+bartlett.test(data$city.L.100km ~ data$continent)
+bartlett.test(data$highway.L.100km ~ data$continent)
+```
+
+Rezultati nam kažu sljedeće: za potrošnju u gradovima imamo približno
+jednake varijance. Dakle ovdje ne možemo odbaciti H0. Međutim, za
+autoceste, dobili smo p-vrijednost od 0.01 što nam govori da postoje
+značajne razlike u varijanci. Ovdje odbacujemo H0. \####
+
+```{r}
+var(data$city.L.100km[data$continent == "Asia"])
+var(data$city.L.100km[data$continent == "Europe"])
+var(data$city.L.100km[data$continent == "North America"])
+print("-----------")
+var(data$highway.L.100km[data$continent == "Asia"])
+var(data$highway.L.100km[data$continent == "Europe"])
+var(data$highway.L.100km[data$continent == "North America"])
+print("-------------")
+var(data$highway.L.100km)
+```
+
+#anova (jednofaktorska!) 
+**Hipoteza za ANOVA-u** 
+Sada smo proveli potrebne testove i možemo krenuti na testiranje potrošnje goriva po kontinentima. Prvo ćemo testirati za gradove. Za početak trebamo postaviti hipoteze:
+$$H0:Očekivana\ potrošnja\ goriva\ u\ gradovima\ je\ jednaka\ po\ kontinentima \\
+\mu_{1} = \mu_{2} = \mu_{3} \\
+H1: Barem\ jedno\ očekivanje\ se\ razlikuje\ od\ ostalih$$
+
+Provedimo test:
+```{r}
+a = aov(data$city.L.100km ~ data$continent)
+summary(a)
+boxplot(data$city.L.100km ~ data$continent)
+```
+Rezultati nam govore da H0 možemo odbaciti. Dobili smo F vrijednost od 30.45 i p-vrijednost od 2.94e-12. Boxplot isto to sugerira, s time da se Europa najviše ističe među 3 kontinenta sa primjetljivo najvećom potrošnjom.
+#t test izmedju azije i NA?
+
+
+Provedimo identičan postupak za autoceste:
+$$H0:Očekivana\ potrošnja\ goriva\ na\ autocestama\\ je\ jednaka\ po\ kontinentima \\
+\mu_{1} = \mu_{2} = \mu_{3} \\
+H1: Barem\ jedno\ očekivanje\ se\ razlikuje\ od\ ostalih$$
+
+ANOVA i boxplot:
+```{r}
+a = aov(data$highway.L.100km ~ data$continent)
+summary(a)
+boxplot(data$highway.L.100km ~ data$continent)
+```
+
+Još jednom nam rezultati govore da H0 možemo odlučno odbaciti.
+Boxplot opet pokazuje da u Europi u prosjeku troše više.
+
+TODO:interpretirat ovo
+```{r}
+model = lm(city.L.100km ~ continent,data=data)
+summary(model)
+
+print(anova(model))
+```
+#komentirat više o potrošnji europe
+Rezultati ova dva testa pokazuju veliko odstupanje u potrošnji europskih autiju od ostale dvije skupine. Međutim, na boxplotovima se ne vidi velika razlika između Sjeverne Amerike i Azije. Ovo nas motivira na izvedbu Tukey testa da vidimo koje kategorije se ističu.
+
+```{r}
+tukey = TukeyHSD(a)
+print(tukey)
+```
+TODO:DOVRSI
+Najviše nas zanima adjusted p-value brojevi. Vidimo da su vrijednost male između Europe i ostalih kontinenata. Međutim, p-vrijednost je relativno velika između NA i Azije što sugerira da im očekivane vrijednosti uistinu nisu toliko različite.

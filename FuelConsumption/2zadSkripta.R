@@ -1,4 +1,4 @@
-path <- "C:/Users/Ivan/Desktop/sapP/AnabolicStatistics/FuelConsumption/car_specifications.csv"
+path <- "car_specifications.csv"
 
 require(nortest)
 data <- read.csv(path)
@@ -25,25 +25,12 @@ for(continent in continents) {
   print(lillie.test((data$highway.L.100km[data$continent == continent])))
 }
 
+#boxplot(data$city.L.100km ~ data$continent)
+#boxplot(data$highway.L.100km ~ data$continent)
 
-bartlett.test(data$city.L.100km ~ data$country)
-bartlett.test(data)
-
-boxplot(data$city.L.100km ~ data$country)
-boxplot(data$highway.L.100km ~ data$country)
-
-boxplot(data$city.L.100km ~ data$contient)
-boxplot(data$highway.L.100km ~ data$continent)
-
-model <- aov(data$city.L.100km ~ data$country)
-summary(model)
-
-model <- aov(data$highway.L.100km ~ data$country)
-summary(model)
 
 model <- aov(data$city.L.100km ~ data$continent)
 summary(model)
 
 model <- aov(data$highway.L.100km ~ data$continent)
 summary(model)
-
