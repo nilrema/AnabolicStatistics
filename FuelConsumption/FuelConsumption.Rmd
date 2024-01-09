@@ -17,9 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Uvod 
 Da odgovorimo na ovo pitanje, moramo analizirati podatke potrošnje
-goriva po više od 2 kontinenta, a kasnije i po manjim regijama (sjeverna
-Europa, zapadna Europa...). Zbog činjenice da imamo više od 2 regije,
-analiza varijance (ANOVA) će biti naš odabir modeliranja. Prvo ćemo
+goriva na 3 kontinenta. Zbog činjenice da imamo više od 2 regije,
+analiza varijance (ANOVA) će biti naš odabir modeliranja, ali prije toga ćemo morati testirati uvjete ANOVA-e. Prvo ćemo
 učitati podatke i onda pretvoriti relevantne stupce u faktore kako bi
 izbjegli potencijalne greške u programiranju Učitavanje i čiščenje
 podataka:
@@ -33,14 +32,19 @@ data$country = as.factor(data$country)
 head(data)
 ```
 
+**Uvjeti za ANOVA-u**
+Kako bi proveli ANOVA test na podacima, prvo moramo biti sigurni da dani podaci zadovoljavaju sljedeće uvjete:
+1. Normalnost 
+2. Nezavisnost
+3. Homogenost varijanci
+
 #lillie 
 **Testiranje normalnosti** 
-Prije nego krenemo sa analizom
-varijance, moramo prvo provjeriti normalnost podataka. Zanimaju nas
-tablice za potrošnju goriva u gradu i na autocesti. Koristit ćemo
-Lilliefors test koji se temelji na Kolmogorov-Smirnov testu. Postavljamo
+Prvo ćemo proveti test normalnosti. Zanimaju nas
+tablice za potrošnju goriva u gradu i na autocesti. Nakon toga nas zanimaju isti ti podaci za različite kontinente. Koristit ćemo
+Lilliefors test koji se temelji na Kolmogorov-Smirnov testu i Q-Q plot za vizualizaciju. Postavljamo
 hipoteze:
-$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ nemaju\ normalnu\ distribuciju\\
+$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ imaju\ normalnu\ distribuciju\\
 H1: \neg H0$$
 
 Provedimo test:
@@ -52,9 +56,7 @@ lillie.test(data$city.L.100km)
 lillie.test(data$highway.L.100km)
 ```
 Za oba testa smo dobili jako malu p-vrijednost. Možemo uvjereno odbaciti
-H0 i zaključiti da su podaci normalno distribuirani.
-
-Prikažimo i neke korisne vizualizacije za provjeru normalnosti.
+H0 i zaključiti da podaci nisu normalno distribuirani.
 Histogrami i Q-Q plotovi(prvi histogram/Q-Q je za gradove, drugi za autoceste):
 ```{r}
 #hist za svaki test
@@ -71,11 +73,11 @@ qqline(data$highway.L.100km)
 
 
 ```
-Vidimo kako podaci u Q-Q plotu prate pravac, što opet pokazuje normalnost podataka.
+Histogrami očito pokazuju kako podaci ne prate normalnu distribuciju. Osim toga, na Q-Q grafu vidimo kako podaci ne prate baš prilagođenu liniju.
 
-Sada treba provesti isti test, ali za sve kontinente. Prvo postavljamo
+Ako provedemo isti test, ali ovaj put po kontinentima, imat ćemo iste zaključke. Prvo postavljamo
 hipoteze:
-$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ nemaju\\ normalnu\ distribuciju\ po\ kontinentima\\
+$$H0: Dani\ podaci\ za\ potrošnju\ goriva\ imaju\\ normalnu\ distribuciju\ po\ kontinentima\\
 H1: \neg H0$$
 
 Pokrenimo kod:
@@ -86,22 +88,14 @@ for (continent in continents) {
   print(paste("For continent:",continent))
   print(lillie.test(data$city.L.100km[data$continent == continent]))
   print(lillie.test(data$highway.L.100km[data$continent == continent]))
+  hist(data$highway.L.100km[data$continent == continent])
+  hist(data$city.L.100km[data$continent == continent])
 }
 ```
 
 Vidimo da smo i po kontinentima dobili male p-vrijednosti. Opet
-odbacujemo H0 i zaključujemo da su podaci za potrošnju goriva normalno
-distribuirani i po kontinentima.
+odbacujemo H0 i zaključujemo da podaci ne prate normalnu distribuciju. Isto možemo zaključiti iz histograma.
 
-Histogrami:
-```{r}
-  hist(data$highway.L.100km[data$continent == "Asia"])
-  hist(data$city.L.100km[data$continent == "Asia"])
-  hist(data$highway.L.100km[data$continent == "North America"])
-  hist(data$city.L.100km[data$continent == "North America"])
-  hist(data$highway.L.100km[data$continent == "Europe"])
-  hist(data$city.L.100km[data$continent == "Europe"])
-```
 
 Q-Q:
 ```{r}
@@ -118,83 +112,46 @@ qqline(data$highway.L.100km[data$continent == "Europe"])
 qqnorm(data$city.L.100km[data$continent == "Europe"],main = "Europe, cities")
 qqline(data$city.L.100km[data$continent == "Europe"])
 ```
-#Bartlett 
-Osim normalnosti, želimo provjeriti da je varijanca približno
-jednaka za sve skupove podataka. Loše poklapanje varijanci može dati
-loše rezultate ANOVA testa. Provjerit ćemo varijance sa Bartlett testom.
-Postavljamo hipoteze (postavimo iste hipoteze za gradove i autoceste):
-$$ \begin{aligned}
-  H_0 & : \sigma_1^2 = \sigma_2^2 = \ldots = \sigma_k^2 \\
-  H_1 & : \text{barem dvije varijance nisu iste}.
-\end{aligned} $$
 
+Zbog neispunjenog uvjeta normalnosti, okrećemo se Kruskal-Wallis testu, koji funkcionira kao neparametarska ANOVA
+Uvjet Kruskal-Wallis testa je da je broj uzoraka barem 5, što lagano vidimo da je zadovoljeno čitajući tablicu.
+
+Hipoteze:
+$$H0:\ Očekivana\ vrijednost\ uzoraka\ je\ jednaka\\
+H1: Barem\ dvije\ očekivane\ vrijednosti\ se\ razlikuju$$
+(Postavljamo istu hipotezu za gradove i autoceste te zbog toga provodimo test dvaput)
+
+Provedimo Kruskal-Wallis test:
 ```{r}
-bartlett.test(data$city.L.100km ~ data$continent)
-bartlett.test(data$highway.L.100km ~ data$continent)
+filteredDataHighway = list(Asia_Highway = data$highway.L.100km[data$continent == "Asia"], NA_Highway = data$highway.L.100km[data$continent == "North America"], Europe_Highway = data$highway.L.100km[data$continent == "Europe"])
+filteredDataCity = list(Asia_City = data$city.L.100km[data$continent == "Asia"], NA_City = data$city.L.100km[data$continent == "North America"], Europe_City = data$city.L.100km[data$continent == "Europe"])
+
+kruskalHighway = kruskal.test(filteredDataHighway)
+kruskalCity = kruskal.test((filteredDataCity))
+print(kruskalHighway)
 ```
+Provjerimo prvo rezultat za autoceste. Dobili smo vrlo malu p-vrijednost, dakle bez sumnje odbacujemo H0 i zaključujemo da se barem dvije očekivane vrijednosti razlikuju.
 
-Rezultati nam kažu sljedeće: za potrošnju u gradovima imamo približno
-jednake varijance. Dakle ovdje ne možemo odbaciti H0. Međutim, za
-autoceste, dobili smo p-vrijednost od 0.01 što nam govori da postoje
-značajne razlike u varijanci. Ovdje odbacujemo H0. \####
-
+Provjerimo sad rezultat za gradove:
 ```{r}
-var(data$city.L.100km[data$continent == "Asia"])
-var(data$city.L.100km[data$continent == "Europe"])
-var(data$city.L.100km[data$continent == "North America"])
-print("-----------")
-var(data$highway.L.100km[data$continent == "Asia"])
-var(data$highway.L.100km[data$continent == "Europe"])
-var(data$highway.L.100km[data$continent == "North America"])
-print("-------------")
-var(data$highway.L.100km)
+print(kruskalCity)
 ```
+Opet imamo vrlo malu p-vrijednost. Za gradove također odbacujemo H0.
 
-#anova (jednofaktorska!) 
-**Hipoteza za ANOVA-u** 
-Sada smo proveli potrebne testove i možemo krenuti na testiranje potrošnje goriva po kontinentima. Prvo ćemo testirati za gradove. Za početak trebamo postaviti hipoteze:
-$$H0:Očekivana\ potrošnja\ goriva\ u\ gradovima\ je\ jednaka\ po\ kontinentima \\
-\mu_{1} = \mu_{2} = \mu_{3} \\
-H1: Barem\ jedno\ očekivanje\ se\ razlikuje\ od\ ostalih$$
-
-Provedimo test:
+Boxplotovi:
 ```{r}
-a = aov(data$city.L.100km ~ data$continent)
-summary(a)
-boxplot(data$city.L.100km ~ data$continent)
+boxplot(filteredDataHighway)
+boxplot(filteredDataCity)
+
 ```
-Rezultati nam govore da H0 možemo odbaciti. Dobili smo F vrijednost od 30.45 i p-vrijednost od 2.94e-12. Boxplot isto to sugerira, s time da se Europa najviše ističe među 3 kontinenta sa primjetljivo najvećom potrošnjom.
-#t test izmedju azije i NA?
-
-
-Provedimo identičan postupak za autoceste:
-$$H0:Očekivana\ potrošnja\ goriva\ na\ autocestama\\ je\ jednaka\ po\ kontinentima \\
-\mu_{1} = \mu_{2} = \mu_{3} \\
-H1: Barem\ jedno\ očekivanje\ se\ razlikuje\ od\ ostalih$$
-
-ANOVA i boxplot:
+Na temelju boxplotova možemo vidjeti u oba da se Europa najviše razlikuje od ostalih. Možemo koristiti Dunnov test da vidimo između kojih grupa su razlike značajne. Dunnov test ima istu hipotezu kao Kruskal-Wallis test
 ```{r}
-a = aov(data$highway.L.100km ~ data$continent)
-summary(a)
-boxplot(data$highway.L.100km ~ data$continent)
+require(dunn.test)
+dunn = dunn.test(data$highway.L.100km,g = data$continent,method="bonferroni")
+print(dunn)
 ```
-
-Još jednom nam rezultati govore da H0 možemo odlučno odbaciti.
-Boxplot opet pokazuje da u Europi u prosjeku troše više.
-
-TODO:interpretirat ovo
-```{r}
-model = lm(city.L.100km ~ continent,data=data)
-summary(model)
-
-print(anova(model))
-```
-#komentirat više o potrošnji europe
-Rezultati ova dva testa pokazuju veliko odstupanje u potrošnji europskih autiju od ostale dvije skupine. Međutim, na boxplotovima se ne vidi velika razlika između Sjeverne Amerike i Azije. Ovo nas motivira na izvedbu Tukey testa da vidimo koje kategorije se ističu.
-
-```{r}
-tukey = TukeyHSD(a)
-print(tukey)
-```
-TODO:DOVRSI
-Najviše nas zanima adjusted p-value brojevi. Vidimo da su vrijednost male između Europe i ostalih kontinenata. Međutim, p-vrijednost je relativno velika između NA i Azije što sugerira da im očekivane vrijednosti uistinu nisu toliko različite.
+Zanima nas "p-adjusted" redak koji se također može vidjeti u tablici(drugi redak u svakoj čeliji).
+Vidimo da je p-adjusted za North_America-Asia relativno velik i nije signifikantan na niti jednoj tipičnoj razini. Međutim, imamo vrlo male p-adjusted vrijednosti između Europe i bilo kojeg drugog kontinenta.
+Ovime možemo zaključiti da je odbijanje nul hipoteze Kruskal-Wallis testa
+bilo primarno zbog razine potrošnje u Europi.
+#pitaj za dunnov test!!!!
