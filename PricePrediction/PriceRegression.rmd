@@ -1,0 +1,332 @@
+---
+title: "Regression Analysis on Car Specifications"
+author: "Andrija Merlin"
+date: "2024-01-11"
+output: pdf_document
+---
+
+# Objasnjenje zadatka
+
+Ovaj dokument predstavlja analizu regresije provedenu na podacima o specifikacijama automobila. Izrađeno je ukupno šest regresijskih modela, svaki kombinira različite karakteristike automobila kako bi se pronašla veza između cijene i tih karakteristika. Cilj je sastaviti najbolji model koji predviđa cijenu automobila.
+
+## Regresijski modeli
+### Karakteristike motora
+Sastavljena su tri regresijska modela, svaki od kojih tvori razlicitu kombinaciju karakteristika motora. 
+
+#### Model 1
+Prvi model koristi varijable: konjske snage, velicinu motora, broj cilindara te sustav goriva kako bi predvidio cijenu automobila.
+
+```{r load-data}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+```{r load-data}
+# Izgradnja regresijskog modela
+# Ovaj model sastoji se od razlicitih karakteristika motora
+ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_system, data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+ISPIS je sljedeci:
+```
+Call:
+lm(formula = price ~ horsepower + engine_size + num_of_cylinders + 
+    fuel_system, data = data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+ -8737  -1338      0   1316  13792 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            -1.100e+03  3.546e+03  -0.310  0.75677    
+horsepower              9.280e+01  1.649e+01   5.626 6.80e-08 ***
+engine_size             5.452e+00  9.809e-01   5.558 9.53e-08 ***
+num_of_cylindersfive   -3.109e+03  2.432e+03  -1.278  0.20283    
+num_of_cylindersfour   -7.148e+03  2.485e+03  -2.877  0.00450 ** 
+num_of_cylinderssix    -7.087e+03  2.125e+03  -3.335  0.00103 ** 
+num_of_cylindersthree  -3.505e+03  4.245e+03  -0.826  0.41008    
+num_of_cylinderstwelve -1.648e+04  3.667e+03  -4.495 1.23e-05 ***
+num_of_cylinderstwo    -3.078e+03  4.415e+03  -0.697  0.48656    
+fuel_system2bbl        -1.505e+02  1.021e+03  -0.147  0.88298    
+fuel_system4bbl         6.971e+02  3.742e+03   0.186  0.85243    
+fuel_systemidi          3.314e+03  1.273e+03   2.603  0.01001 *  
+fuel_systemmfi         -6.178e+03  3.367e+03  -1.835  0.06814 .  
+fuel_systemmpfi         1.478e+02  1.109e+03   0.133  0.89406    
+fuel_systemspdi        -3.849e+03  1.529e+03  -2.517  0.01270 *  
+fuel_systemspfi         3.135e+02  3.259e+03   0.096  0.92348    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3110 on 183 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.8595,	Adjusted R-squared:  0.848 
+F-statistic: 74.66 on 15 and 183 DF,  p-value: < 2.2e-16
+```
+Promatrajuci procijenjene doprinose varijable prediktoru, zakljucujemo da konjske snage te velicina motora znacajno doprinose odredivanju cijene automobila. Takoder, 12 cilindara znacajno utjece na cijenu automobila.
+R-squared metrike govore nam da sastavljeni model objasnjava 85.95%, odnosno, 84.80%
+varijabilnosti.
+P-vrijednost je vrlo niska, sto na nam govori da je model statisticki znacajan.
+
+```{r load-data}
+# Prikazivanje dijagnostike modela
+plot(model)
+```
+![Opis slike](naziv_slike.png)
+
+
+#### Model 2
+Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora te tip motora kako bi predvidio cijenu automobila.
+
+```{r load-data}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+```{r load-data}
+# Izgradnja regresijskog modela
+# Ovaj model kombinira različite karakteristike motora
+model <- lm(price ~ horsepower + engine_location + engine_size  + engine_type , data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+
+ISPIS je sljedeci:
+
+```
+Call:
+lm(formula = price ~ horsepower + engine_location + engine_size + 
+    engine_type, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9888.6 -1329.6   -58.6  1345.7 11922.5 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         -1.229e+04  1.610e+03  -7.635 1.07e-12 ***
+horsepower           3.744e+01  1.291e+01   2.900  0.00417 ** 
+engine_locationrear  7.688e+03  2.362e+03   3.256  0.00134 ** 
+engine_size          9.675e+00  7.062e-01  13.700  < 2e-16 ***
+engine_typel         2.802e+03  1.419e+03   1.975  0.04971 *  
+engine_typeohc       1.735e+03  1.084e+03   1.600  0.11128    
+engine_typeohcf      6.262e+02  1.434e+03   0.437  0.66283    
+engine_typeohcv     -3.312e+03  1.407e+03  -2.354  0.01962 *  
+engine_typerotor     9.720e+03  2.022e+03   4.808 3.10e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3286 on 190 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.8372,	Adjusted R-squared:  0.8304 
+F-statistic: 122.2 on 8 and 190 DF,  p-value: < 2.2e-16
+```
+
+Promatrajući procijenjene doprinose varijabli prediktoru, zaključujemo da konjske snage, lokacija motora i veličina motora značajno doprinose određivanju cijene automobila. Tip motora "rotor" također ima značajan utjecaj na cijenu automobila. R-squared metrike govore nam da sastavljeni model objašnjava 83.72%, odnosno, 83.04% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
+
+PLOTOVI OVDJE
+
+#### Model 3
+
+Treći model koristi varijable: konjske snage, veličinu motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije, i najveću okretajnu brzinu motora kako bi predvidio cijenu automobila.
+
+``` {r load-data}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+``` {r load-data}
+# Izgradnja regresijskog modela
+# Ovaj model kombinira različite karakteristike motora
+model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) + 
+             as.factor(num_of_cylinders) + bore + stroke + compression_ratio + peak_rpm, 
+            data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+
+ISPIS je sljedeci:
+
+```
+Call:
+lm(formula = price ~ horsepower + engine_size + as.factor(engine_type) + 
+    as.factor(num_of_cylinders) + bore + stroke + compression_ratio + 
+    peak_rpm, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6353.2  -979.6    -2.6  1043.0  8501.4 
+
+Coefficients:
+                                    Estimate Std. Error t value
+(Intercept)                        4.588e+03  5.468e+03   0.839
+horsepower                         7.290e+01  1.291e+01   5.645
+engine_size                        8.252e+00  1.267e+00   6.514
+as.factor(engine_type)l            4.349e+03  1.151e+03   3.779
+as.factor(engine_type)ohc          4.201e+03  8.395e+02   5.004
+as.factor(engine_type)ohcf         1.104e+03  1.145e+03   0.964
+as.factor(engine_type)ohcv        -6.443e+03  1.195e+03  -5.391
+as.factor(num_of_cylinders)five   -9.335e+03  2.770e+03  -3.370
+as.factor(num_of_cylinders)four   -1.342e+04  3.132e+03  -4.285
+as.factor(num_of_cylinders)six    -9.762e+03  2.168e+03  -4.502
+as.factor(num_of_cylinders)three  -9.967e+03  4.449e+03  -2.240
+as.factor(num_of_cylinders)twelve -2.161e+04  3.179e+03  -6.797
+bore                              -1.051e+02  5.955e+02  -0.176
+stroke                            -2.187e+03  3.364e+02  -6.500
+compression_ratio                  3.416e+02  5.432e+01   6.289
+peak_rpm                           1.725e+00  5.213e-01   3.310
+                                  Pr(>|t|)    
+(Intercept)                       0.402526    
+horsepower                        6.38e-08 ***
+engine_size                       7.19e-10 ***
+as.factor(engine_type)l           0.000214 ***
+as.factor(engine_type)ohc         1.34e-06 ***
+as.factor(engine_type)ohcf        0.336350    
+as.factor(engine_type)ohcv        2.19e-07 ***
+as.factor(num_of_cylinders)five   0.000922 ***
+as.factor(num_of_cylinders)four   2.98e-05 ***
+as.factor(num_of_cylinders)six    1.21e-05 ***
+as.factor(num_of_cylinders)three  0.026303 *  
+as.factor(num_of_cylinders)twelve 1.53e-10 ***
+bore                              0.860114    
+stroke                            7.72e-10 ***
+compression_ratio                 2.38e-09 ***
+peak_rpm                          0.001129 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2451 on 179 degrees of freedom
+  (6 observations deleted due to missingness)
+Multiple R-squared:  0.9146,	Adjusted R-squared:  0.9074 
+F-statistic: 127.7 on 15 and 179 DF,  p-value: < 2.2e-16
+```
+
+Promatrajući procijenjene doprinose varijablama prediktorima, zaključujemo da konjske snage, veličina motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije i najveća okretajna brzina motora značajno doprinose određivanju cijene automobila. R-squared metrike govore nam da sastavljeni model objašnjava 91.46%, odnosno, 90.74% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
+
+PLOTOVI OVDJE
+
+
+### Marka automobila
+Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model je vrlo jednostavan, no u kontekstu automobila smisleno je promatrati moc takvog modela. 
+
+``` {r load-data}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+```
+
+```{r load-data}
+# sa levels printam sve kategorije ovih varijabli
+levels(data$engine_location)
+#levels(data$aspiration)
+
+model <- lm(price ~ make, data = data)
+
+summary(model)
+```
+
+ISPIS je sljedeci:
+
+```
+Call:
+lm(formula = price ~ make, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9688.7 -2131.5  -354.4  1409.0 15196.2 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       15498.333   2191.253   7.073 3.30e-11 ***
+makeAudi           2360.833   2683.726   0.880  0.38021    
+makeBMW           10620.417   2569.472   4.133 5.49e-05 ***
+makeChevrolet     -9491.333   3098.900  -3.063  0.00253 ** 
+makeDodge         -7622.889   2530.241  -3.013  0.00296 ** 
+makeHonda         -7313.641   2430.977  -3.009  0.00300 ** 
+makeIsuzu         -6581.833   3464.676  -1.900  0.05908 .  
+makeJaguar        19101.667   3098.900   6.164 4.58e-09 ***
+makeMazda         -4845.451   2376.748  -2.039  0.04295 *  
+makeMercedes-Benz 18148.667   2569.472   7.063 3.48e-11 ***
+makeMercury        1004.667   4382.507   0.229  0.81894    
+makeMitsubishi    -6258.564   2430.977  -2.575  0.01085 *  
+makeNissan        -5082.667   2366.824  -2.147  0.03310 *  
+makePeugeot          -9.242   2472.067  -0.004  0.99702    
+makePlymouth      -7534.905   2619.049  -2.877  0.00450 ** 
+makePorsche       15902.167   2898.756   5.486 1.39e-07 ***
+makeRenault       -5903.333   3464.676  -1.704  0.09014 .  
+makeSaab           -275.000   2683.726  -0.102  0.91850    
+makeSubaru        -6957.083   2449.896  -2.840  0.00504 ** 
+makeToyota        -5612.521   2291.668  -2.449  0.01528 *  
+makeVolkswagen    -5420.833   2449.896  -2.213  0.02818 *  
+makeVolvo          2564.848   2472.067   1.038  0.30089    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3795 on 179 degrees of freedom
+Multiple R-squared:  0.7959,	Adjusted R-squared:  0.7719 
+F-statistic: 33.23 on 21 and 179 DF,  p-value: < 2.2e-16
+```
+
+Promatrajuci koeficijente zakljucujemo da sljedece marke znacajno povecavaju cijenu automobila: BMW, Jaguar, Mercedes-Benz i Porsche. Marke koje smanjuju cijenu automobila (u usporedbi s referentnom markom) su: Honda, Mitsubishi, Subaru, Toyota, Volkswagen, Dodge i Chevrolet.
+R-squared metrika govori nam da model objasnjava 79.59% varijabilnosti u cijenama automobila, sto je vrlo znacajno za model sa samo jednom varijablom.
+F statistika ukazuje na znacajnost modela, a p-vrijednost vrlo je niska. 
+
+PLOTOVI OVDJE
+
+### Metrike performansi
+Regresijski model sastavljen je od sljedecih metrika: potrosnja goriva u gradskoj voznji, potrosnja goriva na autocesti te maksimalan broj okretaja. Metrike su usko vezane uz performanse automobila
