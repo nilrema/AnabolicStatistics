@@ -9,11 +9,40 @@ output: pdf_document
 
 Ovaj dokument predstavlja analizu regresije provedenu na podacima o specifikacijama automobila. Izrađeno je ukupno šest regresijskih modela, svaki kombinira različite karakteristike automobila kako bi se pronašla veza između cijene i tih karakteristika. Cilj je sastaviti najbolji model koji predviđa cijenu automobila.
 
+## Interpretacija plotova
+
+Uz modele su prilozeni tzv. Residual vs Fitted te Residuals vs Leverage grafovi.
+
+**Residual vs Fitted** graf provjerava pretpostavku da ostaci (**reziduali**) imaju srednju vrijednost nula na svim razinama nezavisnih varijabli. Zeljeni izgled grafa je nasumicna rasprsenost tocaka, bez jasno vidljivog obrasca. Obrasci ukazuju na to da model nije adekvatno objasnio neki aspekt koristene strukture podataka. Nasumično raspršene točke oko horizontalne linije na nuli sugeriraju da su predviđanja modela nepristrana na svim razinama nezavisnih varijabli. To implicira da je model prikladan za podatke duž cijelog raspona predviđenih vrijednosti. Odsutnost obrazaca ili sustavnih struktura sugerira da su reziduali modela raspoređeni nasumično, što podupire pretpostavku da je odnos između nezavisnih varijabli i zavisne varijable linearan.
+
+**Zakrivljeni oblik:** Zakrivljen odnos u ostacima (kao oblik slova U ili obrnuto U) može sugerirati da postoji nelinearan odnos između nezavisnih varijabli i zavisne varijable koji nije uhvaćen modelom.
+
+**Raširenje/skupljanje (heteroscedastičnost):** Ako se ostaci šire ili skupljaju kako se povećavaju ili smanjuju predviđene vrijednosti, to ukazuje na nejednaku varijancu (heteroscedastičnost), što krši jednu od pretpostavki linearne regresije.
+
+**Residual vs Leverage** graf pomaze u pronalazenju outliera, utjecajnih slucajeva koji neopravdano utjecu na regresijsku liniju. Tocke na dalekoj desnoj strani x-osi su outlieri, a tocke daleko od nulte linije na y-osi su veliki reziduali. Zajedno tvore utjecajne tocke. **Outlieri:**Točke koje su daleko od nule mogu biti izvanredni podaci. Ako ovi izvanredni podaci slijede opći uzorak, možda nisu zabrinjavajući. Međutim, ako se razlikuju od uzorka, mogu neopravdano utjecati na regresiju.
+
+## Interpretacija ispisa
+
+Ispis pruža rezultate analize linearne regresije, uključujući koeficijente modela, njihovu statističku značajnost i ukupno prilagođavanje modela. Razmotrimo ključne komponente:
+
+**Koeficijenti**: Za svaki član u modelu dobivamo **procjenu veličine učinka** (Estimate), **standardnu pogrešku te procjene** (Std. Error) i **t-vrijednost**, koja je procjena podijeljena s njezinom standardnom pogreškom. **Stupac Pr(\>\|t\|)** prikazuje p-vrijednost za t-test protiv nulte hipoteze da je koeficijent nula (nema učinka). Odredeni clanovi su statistički značajni prediktori cijene (Pr(\>\|t\|) je manje od npr. 0,05), pri čemu ce odredeni imati posebno malu p-vrijednost, što ukazuje na snažan odnos s cijenom. Odredeni clanovi nece biti statistički značajni na razini od npr. 0,05 (p-vrijednost je npr. 0,0641).
+
+**Oznake značajnosti:** Zvjezdice označavaju razinu značajnosti, s više zvjezdica označava višu statističku značajnost.
+
+**Standardna pogreška ostataka:** Ovo je procjena standardne devijacije ostataka (reziduala), što je otprilike prosječna udaljenost na kojoj se promatrane vrijednosti nalaze od regresijske linije.
+
+**Multiple R-kvadrat i Prilagođeni R-kvadrat:** Multiple R-kvadrat od npr. 0,7661 ukazuje da se otprilike 76,61% varijabilnosti cijene može objasniti modelom. To je mjera dobrog prilagođavanja modela. Prilagođeni R-kvadrat je prilagođen broju prediktora u modelu i preciznija je mjera dobrog prilagođavanja. Za ovaj model moze iznositi npr. 0,7625.
+
+**F-statistika i njezina p-vrijednost:** F-statistika testira nultu hipotezu da su svi koeficijenti regresije jednaki nuli (tj. model nema objašnjavajuću snagu). Vrlo mala p-vrijednost ukazuje da je model statistički značajan i da je barem jedan od prediktora povezan s cijenom.
+
 ## Regresijski modeli
+
 ### Karakteristike motora
-Sastavljena su tri regresijska modela, svaki od kojih tvori razlicitu kombinaciju karakteristika motora. 
+
+Sastavljena su tri regresijska modela, svaki od kojih tvori razlicitu kombinaciju karakteristika motora.
 
 #### Model 1
+
 Prvi model koristi varijable: konjske snage, velicinu motora, broj cilindara te sustav goriva kako bi predvidio cijenu automobila.
 
 ```{r load-data}
@@ -43,8 +72,10 @@ ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_syste
 # Prikazivanje sažetka modela
 summary(model)
 ```
+
 ISPIS je sljedeci:
-```
+
+```         
 Call:
 lm(formula = price ~ horsepower + engine_size + num_of_cylinders + 
     fuel_system, data = data)
@@ -76,22 +107,23 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 Residual standard error: 3110 on 183 degrees of freedom
   (2 observations deleted due to missingness)
-Multiple R-squared:  0.8595,	Adjusted R-squared:  0.848 
+Multiple R-squared:  0.8595,    Adjusted R-squared:  0.848 
 F-statistic: 74.66 on 15 and 183 DF,  p-value: < 2.2e-16
 ```
-Promatrajuci procijenjene doprinose varijable prediktoru, zakljucujemo da konjske snage te velicina motora znacajno doprinose odredivanju cijene automobila. Takoder, 12 cilindara znacajno utjece na cijenu automobila.
-R-squared metrike govore nam da sastavljeni model objasnjava 85.95%, odnosno, 84.80%
-varijabilnosti.
-P-vrijednost je vrlo niska, sto na nam govori da je model statisticki znacajan.
+
+Promatrajuci procijenjene doprinose varijable prediktoru, zakljucujemo da konjske snage te velicina motora znacajno doprinose odredivanju cijene automobila. Takoder, 12 cilindara znacajno utjece na cijenu automobila. R-squared metrike govore nam da sastavljeni model objasnjava 85.95%, odnosno, 84.80% varijabilnosti. P-vrijednost je vrlo niska, sto na nam govori da je model statisticki znacajan.
 
 ```{r load-data}
 # Prikazivanje dijagnostike modela
 plot(model)
 ```
-![Opis slike](naziv_slike.png)
 
+![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsFIT.png){#id .class width="75%" height="75%"}
+
+![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsLEV.png){.class width="75%" height="75%"}
 
 #### Model 2
+
 Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora te tip motora kako bi predvidio cijenu automobila.
 
 ```{r load-data}
@@ -124,7 +156,7 @@ summary(model)
 
 ISPIS je sljedeci:
 
-```
+```         
 Call:
 lm(formula = price ~ horsepower + engine_location + engine_size + 
     engine_type, data = data)
@@ -149,7 +181,7 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 Residual standard error: 3286 on 190 degrees of freedom
   (2 observations deleted due to missingness)
-Multiple R-squared:  0.8372,	Adjusted R-squared:  0.8304 
+Multiple R-squared:  0.8372,    Adjusted R-squared:  0.8304 
 F-statistic: 122.2 on 8 and 190 DF,  p-value: < 2.2e-16
 ```
 
@@ -161,7 +193,7 @@ PLOTOVI OVDJE
 
 Treći model koristi varijable: konjske snage, veličinu motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije, i najveću okretajnu brzinu motora kako bi predvidio cijenu automobila.
 
-``` {r load-data}
+```{r load-data}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -180,7 +212,7 @@ data$continent <- as.factor(data$continent)
 levels(data$engine_location)
 ```
 
-``` {r load-data}
+```{r load-data}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
 model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) + 
@@ -193,7 +225,7 @@ summary(model)
 
 ISPIS je sljedeci:
 
-```
+```         
 Call:
 lm(formula = price ~ horsepower + engine_size + as.factor(engine_type) + 
     as.factor(num_of_cylinders) + bore + stroke + compression_ratio + 
@@ -243,7 +275,7 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 Residual standard error: 2451 on 179 degrees of freedom
   (6 observations deleted due to missingness)
-Multiple R-squared:  0.9146,	Adjusted R-squared:  0.9074 
+Multiple R-squared:  0.9146,    Adjusted R-squared:  0.9074 
 F-statistic: 127.7 on 15 and 179 DF,  p-value: < 2.2e-16
 ```
 
@@ -251,11 +283,11 @@ Promatrajući procijenjene doprinose varijablama prediktorima, zaključujemo da 
 
 PLOTOVI OVDJE
 
-
 ### Marka automobila
-Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model je vrlo jednostavan, no u kontekstu automobila smisleno je promatrati moc takvog modela. 
 
-``` {r load-data}
+Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model je vrlo jednostavan, no u kontekstu automobila smisleno je promatrati moc takvog modela.
+
+```{r load-data}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -282,7 +314,7 @@ summary(model)
 
 ISPIS je sljedeci:
 
-```
+```         
 Call:
 lm(formula = price ~ make, data = data)
 
@@ -318,15 +350,53 @@ makeVolvo          2564.848   2472.067   1.038  0.30089
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 3795 on 179 degrees of freedom
-Multiple R-squared:  0.7959,	Adjusted R-squared:  0.7719 
+Multiple R-squared:  0.7959,    Adjusted R-squared:  0.7719 
 F-statistic: 33.23 on 21 and 179 DF,  p-value: < 2.2e-16
 ```
 
-Promatrajuci koeficijente zakljucujemo da sljedece marke znacajno povecavaju cijenu automobila: BMW, Jaguar, Mercedes-Benz i Porsche. Marke koje smanjuju cijenu automobila (u usporedbi s referentnom markom) su: Honda, Mitsubishi, Subaru, Toyota, Volkswagen, Dodge i Chevrolet.
-R-squared metrika govori nam da model objasnjava 79.59% varijabilnosti u cijenama automobila, sto je vrlo znacajno za model sa samo jednom varijablom.
-F statistika ukazuje na znacajnost modela, a p-vrijednost vrlo je niska. 
+Promatrajuci koeficijente zakljucujemo da sljedece marke znacajno povecavaju cijenu automobila: BMW, Jaguar, Mercedes-Benz i Porsche. Marke koje smanjuju cijenu automobila (u usporedbi s referentnom markom) su: Honda, Mitsubishi, Subaru, Toyota, Volkswagen, Dodge i Chevrolet. R-squared metrika govori nam da model objasnjava 79.59% varijabilnosti u cijenama automobila, sto je vrlo znacajno za model sa samo jednom varijablom. F statistika ukazuje na znacajnost modela, a p-vrijednost vrlo je niska.
 
 PLOTOVI OVDJE
 
 ### Metrike performansi
-Regresijski model sastavljen je od sljedecih metrika: potrosnja goriva u gradskoj voznji, potrosnja goriva na autocesti te maksimalan broj okretaja. Metrike su usko vezane uz performanse automobila
+
+Regresijski model sastavljen je od sljedecih metrika: potrosnja goriva u gradskoj voznji, potrosnja goriva na autocesti te maksimalan broj okretaja. Metrike su usko vezane uz performanse automobila.
+
+```{r load-data}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+```
+
+```{r load-data}
+# sa levels printam sve kategorije ovih varijabli
+#levels(data$make)
+#levels(data$aspiration)
+
+model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+
+summary(model)
+plot(model)
+```
+
+ISPIS je sljedeci:
+
+```         
+# sa levels printam sve kategorije ovih varijabli
+#levels(data$make)
+#levels(data$aspiration)
+
+model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+
+summary(model)
+plot(model)
+```
