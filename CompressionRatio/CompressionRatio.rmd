@@ -1,0 +1,78 @@
+---
+title: "SAP - projekt"
+author: "Luka Babić, JMBAG: 0036538016"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results = 'hold')
+```
+
+## Analiza omjera kompresije izmedu atmosferskih motora i motora s turbopunjačem
+
+## 1. Učitavanje potrebnih biblioteka i podataka
+```{r}
+podaci <- read.csv("C:/Users/Babbage/Desktop/5semestar/sap/sapProjekt/car_specifications.csv")
+```
+
+## 2. Filtriranje podataka
+```{r}
+# Filtriram podatke prema tipu motora
+atmosferski_motori <- podaci %>% filter(aspiration == "std")
+turbopunjaci <- podaci %>% filter(aspiration == "turbo")
+```
+
+## 3. Deskriptivna statistika
+```{r}
+# Izračun osnovne statističke mjere za omjer kompresije
+summary(atmosferski_motori$compression.ratio)
+summary(turbopunjaci$compression.ratio)
+```
+
+## 4. Testiranje hipoteza
+```{r}
+# Testiranje razlike u omjeru kompresije između dvije grupe motora
+t.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
+```
+
+Ili, ako pretpostavke t-testa nisu zadovoljene, možemo koristiti Mann-Whitney U test:
+
+```{r}
+wilcox.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
+```
+
+## 5. Vizualizacija
+```{r}
+# Vizualizacija razlika u omjeru kompresije između dvije grupe motora
+ggplot() +
+  geom_boxplot(data = rbind(atmosferski_motori %>% mutate(Type = "Atmosferski motori"),
+                            turbopunjaci %>% mutate(Type = "Turbopunjaci")),
+               aes(x = Type, y = compression.ratio)) +
+  labs(title = "Omjer kompresije prema tipu motora",
+       x = "Tip motora",
+       y = "Omjer kompresije") +
+  theme_minimal()
+```
+
+## 6. Zaključak:
+
+Na temelju provedenog Wilcoxonovog testa rangova s korekcijom kontinuiteta, ne možemo odbaciti nultu hipotezu na razini značajnosti od 0,05. P-vrijednost iznosi 0,0813, što je veće od konvencionalnog praga značajnosti od 0,05.
+
+To sugerira da nema statistički značajne razlike u omjeru kompresije između atmosferskih motora i motora s turbopunjačem na razini značajnosti od 0,05.
+
+Međutim, važno je napomenuti da je p-vrijednost vrlo blizu pragu značajnosti od 0,05, što znači da postoji mala vjerojatnost (8,13%) da bismo dobili ovakav ili ekstremniji uzorak ako je nulta hipoteza istinita. U praksi, ovo bi moglo sugerirati potrebu za daljnjim istraživanjem ili povećanjem veličine uzorka kako bismo s većom sigurnošću potvrdili ove rezultate.
+
+Stoga, na temelju dostupnih podataka, ne možemo potvrditi da postoji razlika u omjeru kompresije između atmosferskih motora i motora s turbopunjačem.
+
+
+
+
+--
+.
+--
+

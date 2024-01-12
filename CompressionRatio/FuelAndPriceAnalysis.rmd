@@ -1,0 +1,104 @@
+---
+title: "SAP - projekt"
+author: "Luka Babić, JMBAG: 0036538016"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+---
+  
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results = 'hold')
+```
+
+# DODATNA ISTRAŽIVAČKA PITANJA
+
+
+## Analiza utjecaja vrste goriva na cijenu i potrošnju: Kako vrsta goriva (benzin ili dizel) utječe na potrošnju goriva i cijenu automobila?
+
+## 1. Filtriranje podataka:
+```{r}
+# Ako imate podatke o potrošnji goriva u gradu i na autocesti, filtrirajte samo relevantne varijable
+podaci_gorivo <- podaci %>% select(fuel, price, `city.L.100km`, `highway.L.100km`)
+```
+
+## 2. Deskriptivna statistika:
+```{r}
+# Ispisivanje prvih nekoliko redaka
+head(podaci_gorivo)
+
+# Istraživanje osnovnih statističkih mjera za cijenu i potrošnju goriva prema vrsti goriva
+summary(podaci_gorivo$price)
+summary(podaci_gorivo$`city.L.100km`)
+summary(podaci_gorivo$`highway.L.100km`)
+```
+
+## 3. Vizualizacija:
+
+### 3.1. Vizualizacija razlika u cijeni prema vrsti goriva
+```{r}
+ggplot(podaci_gorivo, aes(x = fuel, y = price, fill = fuel)) +
+  geom_boxplot() +
+  labs(title = "Razlika u cijeni prema vrsti goriva",
+       x = "Vrsta goriva",
+       y = "Cijena") +
+  theme_minimal()
+```
+
+### 3.2. Vizualizacija razlika u potrošnji u gradu prema vrsti goriva
+```{r}
+ggplot(podaci_gorivo, aes(x = fuel, y = `city.L.100km`, fill = fuel)) +
+  geom_boxplot() +
+  labs(title = "Razlika u potrošnji u gradu prema vrsti goriva",
+       x = "Vrsta goriva",
+       y = "Potrošnja goriva (grad)") +
+  theme_minimal()
+```
+
+### 3.3. Vizualizacija razlika u potrošnji na autocesti prema vrsti goriva
+```{r}
+ggplot(podaci_gorivo, aes(x = fuel, y = `highway.L.100km`, fill = fuel)) +
+  geom_boxplot() +
+  labs(title = "Razlika u potrošnji na autocesti prema vrsti goriva",
+       x = "Vrsta goriva",
+       y = "Potrošnja goriva (autocesta)") +
+  theme_minimal()
+```
+
+
+## 4. Statistički testovi:
+
+### 4.1. Testiranje razlika u cijeni između vrsti goriva (ANOVA)
+```{r}
+anova_model <- aov(price ~ fuel, data = podaci_gorivo)
+summary(anova_model)
+```
+
+### 4.2. Testiranje razlika u potrošnji u gradu između vrsti goriva (ANOVA)
+```{r}
+anova_model_city <- aov(`city.L.100km` ~ fuel, data = podaci_gorivo)
+summary(anova_model_city)
+```
+
+### 4.3. Testiranje razlika u potrošnji na autocesti između vrsti goriva (npr. ANOVA)
+```{r}
+anova_model_highway <- aov(`highway.L.100km` ~ fuel, data = podaci_gorivo)
+summary(anova_model_highway)
+```
+
+## 5. Zaključak:
+
+Na temelju rezultata ANOVA testova za usporedbu razlika u cijeni, potrošnji goriva u gradu i potrošnji goriva na autocesti između benzinskih i dizelskih automobila, možemo izvesti sljedeće zaključke:
+  
+  1. Cijena:
+  Rezultati ANOVA testa za cijenu automobila pokazuju da nema statistički značajne razlike u cijeni između benzinskih i dizelskih automobila (p-vrijednost = 0.119 > 0.05). Stoga, na temelju ovih rezultata, ne možemo zaključiti da vrsta goriva značajno utječe na cijenu automobila.
+
+2. Potrošnja u gradu:
+  ANOVA test za potrošnju goriva u gradu pokazuje da postoji statistički značajna razlika između benzinskih i dizelskih automobila (p-vrijednost = 0.000559 < 0.05). Ova razlika sugerira da vrsta goriva ima utjecaj na potrošnju goriva u gradu. Preciznije, rezultati upućuju na to da postoji značajna razlika u prosječnim vrijednostima potrošnje goriva u gradu između benzinskih i dizelskih automobila.
+
+3. Potrošnja na autocesti:
+  ANOVA test za potrošnju goriva na autocesti također pokazuje statistički značajnu razliku između benzinskih i dizelskih automobila (p-vrijednost = 0.0253 < 0.05). To sugerira da vrsta goriva ima utjecaj na potrošnju goriva na autocesti. Analogno rezultatima za potrošnju u gradu, možemo zaključiti da postoji značajna razlika u prosječnim vrijednostima potrošnje goriva na autocesti između benzinskih i dizelskih automobila.
+
+U zaključku, ovisno o varijablama koje analizirate, vrsta goriva može imati značajan utjecaj na potrošnju goriva (u gradu i na autocesti), ali ne nužno i na cijenu automobila. 
