@@ -45,7 +45,9 @@ Sastavljena su tri regresijska modela, svaki od kojih tvori razlicitu kombinacij
 
 Prvi model koristi varijable: konjske snage, velicinu motora, broj cilindara te sustav goriva kako bi predvidio cijenu automobila.
 
-```{r load-data}
+\*KOD:\*\*
+
+```{r}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -64,7 +66,7 @@ data$continent <- as.factor(data$continent)
 levels(data$engine_location)
 ```
 
-```{r load-data}
+```{r}
 # Izgradnja regresijskog modela
 # Ovaj model sastoji se od razlicitih karakteristika motora
 ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_system, data = data)
@@ -73,7 +75,7 @@ ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_syste
 summary(model)
 ```
 
-ISPIS je sljedeci:
+**ISPIS** je sljedeci:
 
 ```         
 Call:
@@ -113,20 +115,22 @@ F-statistic: 74.66 on 15 and 183 DF,  p-value: < 2.2e-16
 
 Promatrajuci procijenjene doprinose varijable prediktoru, zakljucujemo da konjske snage te velicina motora znacajno doprinose odredivanju cijene automobila. Takoder, 12 cilindara znacajno utjece na cijenu automobila. R-squared metrike govore nam da sastavljeni model objasnjava 85.95%, odnosno, 84.80% varijabilnosti. P-vrijednost je vrlo niska, sto na nam govori da je model statisticki znacajan.
 
-```{r load-data}
+```{r}
 # Prikazivanje dijagnostike modela
 plot(model)
 ```
 
-![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsFIT.png){#id .class width="75%" height="75%"}
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsFIT.png){#id .class width="75%" height="75%"}
 
-![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsLEV.png){.class width="75%" height="75%"}
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/ECplots/EC_RESvsLEV.png){.class width="75%" height="75%"}
 
 #### Model 2
 
 Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora te tip motora kako bi predvidio cijenu automobila.
 
-```{r load-data}
+**KOD:**
+
+```{r}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -145,7 +149,7 @@ data$continent <- as.factor(data$continent)
 levels(data$engine_location)
 ```
 
-```{r load-data}
+```{r}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
 model <- lm(price ~ horsepower + engine_location + engine_size  + engine_type , data = data)
@@ -154,7 +158,7 @@ model <- lm(price ~ horsepower + engine_location + engine_size  + engine_type , 
 summary(model)
 ```
 
-ISPIS je sljedeci:
+\*\*ISPIS\* je sljedeci:
 
 ```         
 Call:
@@ -187,13 +191,17 @@ F-statistic: 122.2 on 8 and 190 DF,  p-value: < 2.2e-16
 
 Promatrajući procijenjene doprinose varijabli prediktoru, zaključujemo da konjske snage, lokacija motora i veličina motora značajno doprinose određivanju cijene automobila. Tip motora "rotor" također ima značajan utjecaj na cijenu automobila. R-squared metrike govore nam da sastavljeni model objašnjava 83.72%, odnosno, 83.04% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
 
-PLOTOVI OVDJE
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/EC2plots/EC2_RESvsFIT.png){.class width="75%" height="75%"}
+
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/EC2plots/EC2_RESvsLEV.png){.class width="75%" height="75%"}
 
 #### Model 3
 
 Treći model koristi varijable: konjske snage, veličinu motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije, i najveću okretajnu brzinu motora kako bi predvidio cijenu automobila.
 
-```{r load-data}
+**KOD:**
+
+```{r}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -212,7 +220,7 @@ data$continent <- as.factor(data$continent)
 levels(data$engine_location)
 ```
 
-```{r load-data}
+```{r}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
 model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) + 
@@ -223,7 +231,7 @@ model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) +
 summary(model)
 ```
 
-ISPIS je sljedeci:
+**ISPIS** je sljedeci:
 
 ```         
 Call:
@@ -281,13 +289,17 @@ F-statistic: 127.7 on 15 and 179 DF,  p-value: < 2.2e-16
 
 Promatrajući procijenjene doprinose varijablama prediktorima, zaključujemo da konjske snage, veličina motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije i najveća okretajna brzina motora značajno doprinose određivanju cijene automobila. R-squared metrike govore nam da sastavljeni model objašnjava 91.46%, odnosno, 90.74% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
 
-PLOTOVI OVDJE
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/EC3plots/EC3_RESvsFIT.png){.class width="75%" height="75%"}
+
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/EC3plots/EC3_RESvsLEV.png){.class width="75%" height="75%"}
 
 ### Marka automobila
 
 Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model je vrlo jednostavan, no u kontekstu automobila smisleno je promatrati moc takvog modela.
 
-```{r load-data}
+**KOD:**
+
+```{r}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -302,7 +314,7 @@ data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
 ```
 
-```{r load-data}
+```{r}
 # sa levels printam sve kategorije ovih varijabli
 levels(data$engine_location)
 #levels(data$aspiration)
@@ -312,7 +324,7 @@ model <- lm(price ~ make, data = data)
 summary(model)
 ```
 
-ISPIS je sljedeci:
+**ISPIS** je sljedeci:
 
 ```         
 Call:
@@ -356,13 +368,17 @@ F-statistic: 33.23 on 21 and 179 DF,  p-value: < 2.2e-16
 
 Promatrajuci koeficijente zakljucujemo da sljedece marke znacajno povecavaju cijenu automobila: BMW, Jaguar, Mercedes-Benz i Porsche. Marke koje smanjuju cijenu automobila (u usporedbi s referentnom markom) su: Honda, Mitsubishi, Subaru, Toyota, Volkswagen, Dodge i Chevrolet. R-squared metrika govori nam da model objasnjava 79.59% varijabilnosti u cijenama automobila, sto je vrlo znacajno za model sa samo jednom varijablom. F statistika ukazuje na znacajnost modela, a p-vrijednost vrlo je niska.
 
-PLOTOVI OVDJE
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/MAKEplots/MAKE_RESvsFIT.png){.class width="75%" height="75%"}
+
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/MAKEplots/MAKE_RESvsLEV.png){.class width="75%" height="75%"}
 
 ### Metrike performansi
 
 Regresijski model sastavljen je od sljedecih metrika: potrosnja goriva u gradskoj voznji, potrosnja goriva na autocesti te maksimalan broj okretaja. Metrike su usko vezane uz performanse automobila.
 
-```{r load-data}
+**KOD:**
+
+```{r}
 # Učitavanje podataka
 data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
 
@@ -377,12 +393,74 @@ data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
 ```
 
-```{r load-data}
+```{r}
 # sa levels printam sve kategorije ovih varijabli
 #levels(data$make)
 #levels(data$aspiration)
 
 model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+
+summary(model)
+plot(model)
+```
+
+\*\*ISPIS\* je sljedeci:
+
+```         
+Call:
+lm(formula = price ~ city_L_100km + highway_L_100km + peak_rpm, 
+    data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9262.2 -3064.7  -351.8  1878.3 18031.5 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      325.1097  4089.8995   0.079 0.936724    
+city_L_100km    1526.5314   482.9152   3.161 0.001823 ** 
+highway_L_100km 1451.6345   660.8091   2.197 0.029217 *  
+peak_rpm          -2.7238     0.7266  -3.749 0.000234 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4604 on 195 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.6721,    Adjusted R-squared:  0.6671 
+F-statistic: 133.3 on 3 and 195 DF,  p-value: < 2.2e-16
+```
+
+Iako model slabije objasnjava varijabilnost u podacima od predhodno koristenih modela, gledajuci F-statistiku primjecujemo da je model i dalje statisticki znacajan. Manje je kompleksan od nekih predhodno koristenih, sto ga cini interpretabilnijim. Varijabla koja je statisticki najznacajnija je maksimalan broj okretaja motora. Model objasnjava 67.21% varijabilnosti podataka.
+
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/PMplots/PM_RESvsFIT.png){.class width="75%" height="75%"}
+
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/PMplots/PM_RESvsLEV.png){.class width="75%" height="75%"}
+
+### Konjske snage
+
+Model se sastoji od jedne varijable - konjskih snaga. Model je na prvi pogled prejednostavan, no u kontekstu automobila ima smisla promotriti ga (automobili sa vise konjskih snaga motora u pravilu su skuplji).
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# sa levels printam sve kategorije ovih varijabli
+#levels(data$make)
+#levels(data$aspiration)
+
+model <- lm(price ~ horsepower, data = data)
 
 summary(model)
 plot(model)
@@ -391,12 +469,28 @@ plot(model)
 ISPIS je sljedeci:
 
 ```         
-# sa levels printam sve kategorije ovih varijabli
-#levels(data$make)
-#levels(data$aspiration)
+Call:
+lm(formula = price ~ horsepower, data = data)
 
-model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10180.1  -2262.0   -471.1   1779.5  18276.2 
 
-summary(model)
-plot(model)
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -4562.175    974.995  -4.679 5.35e-06 ***
+horsepower    172.206      8.866  19.424  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4685 on 197 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.657, Adjusted R-squared:  0.6552 
+F-statistic: 377.3 on 1 and 197 DF,  p-value: < 2.2e-16
 ```
+
+Model objasnjava 65.7% varijabilnosti u cijenama automobila, brojka je slicna modelu koji koristi metrike performanse za predvidanje cijene koji smo promatrali maloprije. F statistika nam govori da je model statisticki znacajan (p vrijednost je vrlo mala). Iako model koristi samo jednu varijablu za predikciju cijene, multiple R-squared je relativno visok te pokazuje na dobru sposobnost objasnjavanja varijabilnosti u cijenama vozila.
+
+**GRAFOVI:** ![Residuals vs Fitted plot](C:/FER/SAP/Projekt/PricePrediction/HPplots/HP_RESvsFIT.png){.class width="75%" height="75%"}
+
+![Residuals vs Leverage plot](C:/FER/SAP/Projekt/PricePrediction/HPplots/HP_RESvsLEV.png){.class width="75%" height="75%"}
