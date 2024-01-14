@@ -1,0 +1,51 @@
+**Marka (make)**: Ovo označava proizvođača automobila, kao što su Alfa Romeo, Ford, Toyota itd.
+
+**Aspiracija (aspiration)**: Odnosi se na vrstu usisa zraka u motor. Standardna aspiracija (std) znači da nema prisilnog punjenja, dok termini poput turbo označavaju prisutnost turbopunjača.
+
+**Broj vrata (num-of-doors)**: Označava koliko vrata ima vozilo, obično dvoja ili četvora.
+
+**Stil karoserije (body-style)**: Opisuje oblik i stil karoserije automobila, kao što su kabriolet (convertible), kupe, sedan, hatchback itd.
+
+**Pogonski kotači (drive-wheels)**: Označava koji set kotača prima snagu od motora. Mogućnosti uključuju pogon na prednje kotače (fwd), pogon na stražnje kotače (rwd) ili pogon na sve kotače (awd/4wd).
+
+**Položaj motora (engine-location)**: Govori gdje se motor nalazi u vozilu, obično u prednjem (front) ili stražnjem (rear) dijelu.
+
+**Međuosovinski razmak (wheel-base)**: Mjera između središta prednjih i stražnjih kotača, izražena u centimetrima, utječe na upravljivost i prostor u kabini.
+
+**Dužina (length)**: Ukupna dužina vozila izražena u centimetrima.
+
+**Širina (width)**: Ukupna širina vozila izražena u centimetrima.
+
+**Visina (height)**: Ukupna visina vozila izražena u centimetrima.
+
+**Masa vozila (curb-weight)**: Težina vozila bez putnika i tereta, izražena u kilogramima.
+
+**Tip motora (engine-type)**: Opisuje konfiguraciju i dizajn motora, kao što su inline, V-tip, boxer, itd.
+
+**Broj cilindara (num-of-cylinders)**: Označava koliko cilindara ima motor, što može biti četiri, šest, osam itd.
+
+**Zapremina motora (engine-size)**: Volumen svih cilindara motora, izražen u kubnim centimetrima (cc).
+
+**Sustav za gorivo (fuel-system)**: Tip sustava za isporuku goriva u motor, kao što su karburator (carb), višestruko ubrizgavanje (mpfi), direktno ubrizgavanje (direct injection), itd.
+
+**Promjer cilindra (bore)**: Unutarnji promjer cilindra motora, izražen u centimetrima.
+
+**Hod klipa (stroke)**: Udaljenost koju klip prelazi unutar cilindra, izražena u centimetrima.
+
+**Kompresijski omjer (compression-ratio)**: Odnos između ukupnog volumena cilindra i volumena kompresijske komore u motoru.
+
+**Snaga (horsepower)**: Mjera snage motora, izražena u konjskim snagama.
+
+**Maksimalni okretaji (peak-rpm)**: Maksimalni broj okretaja motora u minuti pri kojem motor postiže maksimalnu snagu.
+
+**Cijena (price)**: Tržišna cijena vozila izražena u lokalnoj valuti.
+
+**Potrošnja u gradu (city-L/100km)**: Prosječna potrošnja goriva u gradu, izražena u litrama na 100 kilometara.
+
+**Potrošnja na autocesti (highway-L/100km)**: Prosječna potrošnja goriva na autocesti, izražena u litrama na 100 kilometara.
+
+**Vrsta goriva (fuel)**: Tip goriva koje koristi vozilo, kao što su benzin (petrol), dizel, električna energija, hibrid, itd.
+
+**Zemlja proizvodnje (country)**: Država u kojoj je vozilo proizvedeno.
+
+**Kontinent (continent)**: Kontinent na kojem se nalazi zemlja proizvodnje.
