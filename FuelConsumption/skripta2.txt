@@ -1,0 +1,37 @@
+Testiramo potrosnju na autocestama i u gradovima na >2 kontinenta -> ANOVA
+Provjerimo sredine potrosnje da vidimo sto bi mogli ocekivati 
+	-Europljani troše značajno više
+Prije nego krenemo sa ANOVA-om moramo provjeriti uvjete:
+	1.Normalnost
+	2.Nezavisnost
+	3.Homogenost varijanci
+Testiramo normalnost, koristimo Lillieforov test (temeljen na KS testu):
+	-H0: podaci imaju normalnu distribuciju
+	-H1: nemaju
+	-Rezultati: Za autoceste i gradove za svaki kontinent smo dobili isti zaključak: mala p-vrijednost, dakle odbacujemo
+		    H0 i zaključujemo da podaci nisu normalno distribuirani. Osim toga, Q-Q i histogrami pokazuju da podaci ne prate 			    normalnu distribuciju.
+Nemamo uvjet normalnosti => ne koristimo ANOVA-u
+Okrećemo se Kruskal-Wallis testu: neparametraski test, alternativa ANOVA-i. Jedini uvjet je da je broj podataka barem 5.
+Kruskal-Wallis test:
+	-H0: očekivana razina potrošnje goriva je ista za sve kontinente
+	-H1: Barem jedna očekivana razina potrošnje se razlikuje od ostalih
+	-Ove hipoteze postavljamo za gradove i autoceste, te zbog toga provodimo test dvaput
+	-Retultati: mala p-vrijednost za oba testa, odbacujemo H0. Barem jedna očekivana vrijednost se razlikuje od ostalih.
+Zanimaju nas outlieri zbog kojih je odbijen H0. Koristimo Dunnov test (post-hoc test za Kruskal-Wallis, slično kao Tukeyev test nakon ANOVA-e).
+Tim testom možemo vidjeti između kojih grupa je razlika velika
+Dunnov test:
+	-iste hipoteze kao KW test
+	-rezultati: p-adjusted(!) je veliki za NA-Asia (dakle nema signifikantne razlike), a veliki za EU-NA i EU-Asia (velika razlika). Dakle, očito je EU outlier u Kruskal-Wallis testu. Na temelju ranijih grafova zaključujemo da je outlier zbog toga što troše više.
+
+Subregionalno testiranje:
+Azija i Sjeverna Amerika imaju slične potrošnje i samo jednu ponuđenu državu. Dakle ne želimo ni ne možemo raditi subregionalne testove.
+Ali na Europi možemo. Napravimo sledeće grupacije (nemamo dovoljno podataka za neke države da ih odvojeno testiramo):
+	-Francuska,Italija (Zapdna Europa)
+	-UK,Švedska (Sjeverna)
+	-Njemačka (Središnja)
+Na ovim grupama opet provodimo KW:
+	-iste hipoteze
+	-rezultati: velike p-vrijednosti. Ne odbacujemo H0, nema razlike u očekivanoj potrošnji. 
+Napravimo boxplot po državama europe za potrošnju:
+	-Sve države su usporedive osim UK koja troši poprilično puno (vjv jer su u podacima dana 3 jaguara sa jačim motorima)
+Zaključak: Nema posebnih outliera među europskim državama (osim UK ali je za njih premalo podataka). Dakle, u prosjeku svi Europljani troše više od ostalih

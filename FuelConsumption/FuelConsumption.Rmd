@@ -110,7 +110,7 @@ Okrećemo se alternativi ANOVA testa, Kruskal-Wallis test. To je neparametarski 
 Hipoteze:
 $$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ kontinentima\ je\ jednaka\\
 H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$
-Ovu istu hipotezu za gradove i autoceste te zbog toga provodimo test dvaput.
+Ovu istu hipotezu postavljamo za gradove i autoceste te zbog toga provodimo test dvaput.
 
 Provedimo Kruskal-Wallis test:
 ```{r}
@@ -129,13 +129,7 @@ print(kruskalCity)
 ```
 Opet imamo p-vrijednost koja je efektivno jednaka nuli. Za potrošnju u gradovima također odbacujemo H0.
 
-Boxplotovi:
-```{r}
-boxplot(filteredDataHighway)
-boxplot(filteredDataCity)
-
-```
-Na temelju boxplotova možemo vidjeti u oba da se Europa najviše razlikuje od ostalih. Možemo koristiti Dunnov test da vidimo između kojih grupa su razlike značajne. Dunnov test ima istu hipotezu kao Kruskal-Wallis test.
+Na temelju boxplotova koje smo ranije vidjeli, najvjerojatnije su podaci za Europu zaslužni za odbijanje H0. Možemo koristiti Dunnov test da vidimo između kojih grupa su razlike značajne. Dunnov test ima istu hipotezu kao Kruskal-Wallis test.
 ```{r}
 require(dunn.test)
 dunn = dunn.test(data$highway.L.100km , g = data$continent,method="bonferroni")
@@ -147,7 +141,7 @@ Zanima nas "p-adjusted" redak koji se također može vidjeti u tablici(drugi red
 
 #subregionalno
 **Testiranje među regijama u Europi**
-Budući da Azija i Sjeverna Amerika imaju relativno slične potrošnje i imaju samo jednu državu po kontinentu, ne zanima nas detaljnije subregionalno testiranje. Međutim, Europu, koja je imala poprilično veliku potrošnju goriva, možemo podijeliti na manje regije, no ne možemo testirati na pojedinim državama jer za neke nemamo dovoljno podataka. Opet ćemo napraviti Kruskal-Wallis test i, po potrebi, Dunnov test. Ovime možemo probati zaključiti ako se u nekim regijama više troši. 
+Budući da Azija i Sjeverna Amerika imaju relativno slične potrošnje, ne zanima nas detaljnije subregionalno testiranje. Osim toga, ti kontinenti imaju samo po jednu državu u podacima, dakle ni ne možemo podjeliti na manje regije. Međutim, Europu, koja je imala poprilično veliku potrošnju goriva i mnogo država, možemo podijeliti na manje regije, no ne možemo testirati na pojedinim državama jer za neke nemamo dovoljno podataka. Opet ćemo napraviti Kruskal-Wallis test i, po potrebi, Dunnov test. Ovime možemo probati zaključiti ako se u nekim regijama više troši. 
 
 ***Podjela na subregije***
 Trebamo odrediti kako želimo grupirati države. Ciljat ćemo na podjelu koja otprilike dijeli Europu na zapadnu, sjevernu i središnju Europu. Budući da za Italiju i UK nemamo dovoljno podataka, grupirat ćemo ih sa Francuskom i Švedskom respektivno. Francuska i Italija će predstavljati zapadnu, UK i Švedska sjevernu, a Njemačka središnju Europu.
@@ -164,6 +158,10 @@ europeDataHighway = list(west = westEuData$highway.L.100km, north = northEuData$
 europeDataCity = list(west = westEuData$city.L.100km, northEuData$city.L.100km, central = centralEuData$city.L.100km)
 
 ```
+
+Hipoteze su na istu logiku:
+$$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ podregijama\ je\ jednaka\\
+H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$
 
 Provedimo testove:
 ```{r}
@@ -184,3 +182,4 @@ boxplot(euData$highway.L.100km ~ euData$country)
 boxplot(euData$city.L.100km ~ euData$country)
 ```
 Za neke države imamo jako malo podataka, ali možemo vidjeti da UK značajno odstupa od ostalih država. Vjerojatno jer su u datasetu uključeni Jaguari sa jačim motorima koji više troše.
+Zaključujemo da nisu određene europske države zaslužne za značajno odstupanje u prosječnoj potrošnji goriva, već vidimo da se generalno više troši, bilo u gradovima bilo na autocestama.
