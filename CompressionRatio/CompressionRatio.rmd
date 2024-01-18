@@ -9,11 +9,23 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(lubridate)
+library(broom)
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(results = 'hold')
 ```
 
-## Analiza omjera kompresije izmedu atmosferskih motora i motora s turbopunjačem
+# Analiza omjera kompresije izmedu atmosferskih motora i motora s turbopunjačem
+
+## 0. Uvod
+
+U današnjem automobilskom svijetu, različite vrste motora pružaju raznolikost performansi i karakteristika vozila. Jedna od ključnih karakteristika koja utječe na rad motora je omjer kompresije. Omjer kompresije definira odnos između najvećeg i najmanjeg volumena komore za sagorijevanje u motoru.
+
+Ovaj istraživački rad usredotočuje se na analizu omjera kompresije između dviju značajnih kategorija motora: atmosferskih motora i motora s turbopunjačem. Atmosferski motori koriste prirodnu aspiraciju zraka, dok turbopunjači poboljšavaju performanse putem prisilnog punjenja zraka.
+
+Cilj analize je istražiti potencijalne razlike u omjeru kompresije između ove dvije kategorije motora te razumjeti kako omjer kompresije može utjecati na performanse vozila. Za provedbu ove analize koristit ćemo statističke metode i vizualizacije kako bismo dobili dublji uvid u raspodjelu i karakteristike podataka.
+
+Slijedi korak po korak analiza koja će uključivati učitavanje podataka, deskriptivnu statistiku, vizualizaciju razlika te testiranje hipoteza. Kroz ovaj proces, nastojat ćemo donijeti relevantne zaključke o omjeru kompresije između atmosferskih motora i turbopunjača.
+
 
 ## 1. Učitavanje potrebnih biblioteka i podataka
 ```{r}
@@ -21,6 +33,8 @@ podaci <- read.csv("C:/Users/Babbage/Desktop/5semestar/sap/sapProjekt/car_specif
 ```
 
 ## 2. Filtriranje podataka
+
+U ovom dijelu analize, podaci o vozilima filtriraju se prema vrsti motora kako bi se stvorile dvije grupe za daljnje usporedbe. Koristeći atribut aspiration, koji označava tip aspiracije motora, razlikujemo atmosferske motore (std - standardna aspiracija) i turbopunjače (turbo). Stvaraju se dvije nove skupine podataka, atmosferski_motori i turbopunjaci, koje predstavljaju vozila s određenim tipom motora.
 ```{r}
 # Filtriram podatke prema tipu motora
 atmosferski_motori <- podaci %>% filter(aspiration == "std")
@@ -28,25 +42,28 @@ turbopunjaci <- podaci %>% filter(aspiration == "turbo")
 ```
 
 ## 3. Deskriptivna statistika
+
+U ovoj sekciji izračunavaju se osnovne statističke mjere za omjer kompresije u obje grupe motora. Korištenje funkcije summary omogućuje nam brz pregled statističkih parametara, uključujući minimum, prvi kvartil, medijan, srednju vrijednost, treći kvartil i maksimum.
 ```{r}
 # Izračun osnovne statističke mjere za omjer kompresije
 summary(atmosferski_motori$compression.ratio)
 summary(turbopunjaci$compression.ratio)
 ```
 
-## 4. Testiranje hipoteza
-```{r}
-# Testiranje razlike u omjeru kompresije između dvije grupe motora
-t.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
-```
+## 4. Vizualizacija
 
-Ili, ako pretpostavke t-testa nisu zadovoljene, možemo koristiti Mann-Whitney U test:
+Ova sekcija koristi različite grafičke prikaze kako bismo bolje razumjeli raspodjelu omjera kompresije u oba tipa motora.
 
-```{r}
-wilcox.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
-```
+Boxplot prema tipu motora:
+  Boxplot prikazuje raspodjelu omjera kompresije između atmosferskih motora i turbopunjača. Osim toga, koristi se rbind za spajanje dviju grupa motora i dodaje se oznaka tipa motora.
 
-## 5. Vizualizacija
+Boxplot prema broju cilindara:
+  Ovaj grafikon pruža uvid u omjer kompresije u odnosu na broj cilindara vozila.
+
+Boxplot prema aspiraciji:
+  Vizualizira omjer kompresije u odnosu na tip aspiracije motora i vrstu goriva.
+
+
 ```{r}
 # Vizualizacija razlika u omjeru kompresije između dvije grupe motora
 ggplot() +
@@ -57,17 +74,111 @@ ggplot() +
        x = "Tip motora",
        y = "Omjer kompresije") +
   theme_minimal()
+
+#Boxplot prema broju cilindara:
+ggplot(podaci, aes(x = num.of.cylinders, y = compression.ratio)) +
+  geom_boxplot() +
+  labs(title = "Omjer kompresije prema broju cilindara",
+       x = "Broj cilindara",
+       y = "Omjer kompresije") +
+  theme_minimal()
+
+#Boxplot prema aspiraciji:
+ggplot(podaci, aes(x = aspiration, y = compression.ratio, fill = fuel)) +
+  geom_boxplot() +
+  labs(title = "Omjer kompresije prema aspiraciji i vrsti goriva",
+       x = "Aspiracija",
+       y = "Omjer kompresije") +
+  theme_minimal()
+
+
+```
+
+## 4.1. Q-Q
+```{r}
+# Q-Q plot for atmosferski motori
+qqnorm(atmosferski_motori$compression.ratio, main = "Q-Q Plot - Compression Ratio - Atmosferski motori", col = "blue")
+qqline(atmosferski_motori$compression.ratio, col = "blue")
+
+# Q-Q plot for turbopunjaci
+qqnorm(turbopunjaci$compression.ratio, main = "Q-Q Plot - Compression Ratio - Turbopunjaci", col = "red")
+qqline(turbopunjaci$compression.ratio, col = "red")
+```
+U analizi Q-Q grafikona za omjer kompresije između atmosferskih motora i motora s turbopunjačem primijetili smo određene odstupanja od pretpostavljene normalne distribucije podataka. Q-Q grafikon za atmosferske motore pokazuje blagi uspon, dok Q-Q grafikon za turbopunjače ima izraženiji uspon prema gore.
+
+Ova odstupanja od očekivane normalne distribucije ukazuju na moguću netipičnost u raspodjeli podataka, koja može proizaći iz različitih uzroka, poput asimetrije ili prisutnosti ekstremnih vrijednosti. Ovi rezultati sugeriraju da omjeri kompresije nisu slijedili klasičnu Gaussovu distribuciju.
+
+## 4.2. Residuals vs Fitted
+```{r}
+# Residuals vs Fitted plot
+residuals_vs_fitted <- lm(compression.ratio ~ Type, data = rbind(atmosferski_motori %>% mutate(Type = "Atmosferski motori"),
+                                                                 turbopunjaci %>% mutate(Type = "Turbopunjaci")))
+
+# Create a data frame with residuals and fitted values
+residuals_data <- as.data.frame(residuals_vs_fitted$residuals)
+names(residuals_data) <- c("Residuals")
+residuals_data$Fitted <- residuals_vs_fitted$fitted.values
+
+# Residuals vs Fitted plot
+ggplot(residuals_data, aes(x = Fitted, y = Residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Residuals vs Fitted Plot",
+       x = "Fitted Values",
+       y = "Residuals") +
+  theme_minimal()
+```
+
+## 4.3. Residuals vs Leverage plot
+```{r}
+# Fit the linear model
+model <- lm(compression.ratio ~ Type, data = rbind(atmosferski_motori %>% mutate(Type = "Atmosferski motori"),
+                                                  turbopunjaci %>% mutate(Type = "Turbopunjaci")))
+
+# Obtain residuals and leverage values
+residuals_leverage <- augment(model)
+
+# Residuals vs Leverage plot
+ggplot(residuals_leverage, aes(x = .hat, y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Residuals vs Leverage Plot",
+       x = "Leverage",
+       y = "Residuals") +
+  theme_minimal()
+
+```
+
+
+## 5. Testiranje hipoteza
+
+Gledajući QQ plotove, primjećujemo određena odstupanja od očekivane linije. Ako je normalnost zadovoljena, to bi rezultiralo linearnom raspodjelom točaka duž te linije. No, u našem slučaju, ovi plotovi pokazuju nelinearne oblike, što sugerira odstupanje od normalnosti.
+
+Upravo zbog toga, kako bismo bili sigurni u interpretaciju rezultata, umjesto t-testa koji pretpostavlja normalnost, koristit ćemo Mann-Whitney U test. Ovaj test je neparametarski test koji ne zahtijeva pretpostavku o normalnoj distribuciji podataka.
+
+Ovaj test će nam dati statistički rezultat temeljen na rangovima podataka i bit će valjan bez obzira na to je li distribucija normalna ili ne. Ako p-vrijednost ovog testa bude veća od odabranog praga značajnosti (0.05), to bi potvrdilo da nema statistički značajne razlike u omjeru kompresije između atmosferskih motora i turbopunjača.
+
+Hipoteze:
+\[
+\begin{align*}
+H_0 &: \text{Očekivana vrijednost omjera kompresije između atmosferskih motora i turbopunjača je jednaka.}\\
+H_1 &: \text{Postoji barem jedna značajna razlika u omjeru kompresije između atmosferskih motora i turbopunjača.}
+\end{align*}
+\]
+
+**Mann-Whitney U test**
+
+```{r}
+wilcox.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
 ```
 
 ## 6. Zaključak:
 
-Na temelju provedenog Wilcoxonovog testa rangova s korekcijom kontinuiteta, ne možemo odbaciti nultu hipotezu na razini značajnosti od 0,05. P-vrijednost iznosi 0,0813, što je veće od konvencionalnog praga značajnosti od 0,05.
+Testirali smo nultu hipotezu koja glasi da nema razlike u omjeru kompresije između atmosferskih motora i turbopunjača. P-vrijednost koja iznosi 0,0813 nije niža od konvencionalnog praga značajnosti od 0,05. Stoga, na temelju dostupnih podataka, nemamo dovoljno dokaza da odbacimo nultu hipotezu na razini značajnosti od 0,05.
 
-To sugerira da nema statistički značajne razlike u omjeru kompresije između atmosferskih motora i motora s turbopunjačem na razini značajnosti od 0,05.
+Međutim, važno je napomenuti da je p-vrijednost vrlo blizu ovog praga značajnosti, što znači da postoji mala vjerojatnost (8,13%) da bismo dobili ovakav ili ekstremniji uzorak ako je nulta hipoteza istinita. U praksi, ovo može sugerirati potrebu za daljnjim istraživanjem ili povećanjem veličine uzorka kako bismo s većom sigurnošću potvrdili ove rezultate.
 
-Međutim, važno je napomenuti da je p-vrijednost vrlo blizu pragu značajnosti od 0,05, što znači da postoji mala vjerojatnost (8,13%) da bismo dobili ovakav ili ekstremniji uzorak ako je nulta hipoteza istinita. U praksi, ovo bi moglo sugerirati potrebu za daljnjim istraživanjem ili povećanjem veličine uzorka kako bismo s većom sigurnošću potvrdili ove rezultate.
-
-Stoga, na temelju dostupnih podataka, ne možemo potvrditi da postoji razlika u omjeru kompresije između atmosferskih motora i motora s turbopunjačem.
+Dakle, na temelju Mann-Whitney U testa, ne možemo sa sigurnošću zaključiti da postoji statistički značajna razlika u omjeru kompresije između atmosferskih motora i turbopunjača.
 
 
 

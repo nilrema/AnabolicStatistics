@@ -18,8 +18,10 @@ knitr::opts_chunk$set(results = 'hold')
 
 ## Analiza utjecaja vrste goriva na cijenu i potrošnju: Kako vrsta goriva (benzin ili dizel) utječe na potrošnju goriva i cijenu automobila?
 
-## 1. Filtriranje podataka:
+## 1. Učitavanje i filtriranje podataka:
 ```{r}
+podaci <- read.csv("C:/Users/Babbage/Desktop/5semestar/sap/sapProjekt/car_specifications.csv")
+
 # Ako imate podatke o potrošnji goriva u gradu i na autocesti, filtrirajte samo relevantne varijable
 podaci_gorivo <- podaci %>% select(fuel, price, `city.L.100km`, `highway.L.100km`)
 ```
@@ -101,4 +103,4 @@ Na temelju rezultata ANOVA testova za usporedbu razlika u cijeni, potrošnji gor
 3. Potrošnja na autocesti:
   ANOVA test za potrošnju goriva na autocesti također pokazuje statistički značajnu razliku između benzinskih i dizelskih automobila (p-vrijednost = 0.0253 < 0.05). To sugerira da vrsta goriva ima utjecaj na potrošnju goriva na autocesti. Analogno rezultatima za potrošnju u gradu, možemo zaključiti da postoji značajna razlika u prosječnim vrijednostima potrošnje goriva na autocesti između benzinskih i dizelskih automobila.
 
-U zaključku, ovisno o varijablama koje analizirate, vrsta goriva može imati značajan utjecaj na potrošnju goriva (u gradu i na autocesti), ali ne nužno i na cijenu automobila. 
+U zaključku, ovisno o varijablama koje analiziramo, vrsta goriva može imati značajan utjecaj na potrošnju goriva (u gradu i na autocesti), ali ne nužno i na cijenu automobila. 
