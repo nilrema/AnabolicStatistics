@@ -394,6 +394,11 @@ Uz modele su priloženi tzv. Residual vs Fitted te Normal Q-Q grafovi.
 
 **Raširenje/skupljanje (heteroscedastičnost):** Ako se ostaci šire ili skupljaju kako se povećavaju ili smanjuju predviđene vrijednosti, to ukazuje na nejednaku varijancu (heteroscedastičnost), što krši jednu od pretpostavki linearne regresije.
 
+**Normal Q-Q**: Normal Q-Q graf služi za provjeru pretpostavke normalne distribucije reziduala (ostataka) modela. Ideja je usporediti kvantile empirijske distribucije reziduala s kvantilima teorijske normalne distribucije. Ako su točke na grafu približno poravnate duž pravca, to sugerira da reziduali slijede normalnu distribuciju.
+
+Ako točke na grafu leže duž pravca koji prolazi kroz središte, to ukazuje na to da reziduali imaju srednju vrijednost blizu nula, što je dobra karakteristika. Graf može ukazivati na to koliko dobro reziduali odgovaraju pretpostavci normalnosti.
+
+
 ## Interpretacija ispisa
 
 Ispis pruža rezultate analize linearne regresije, uključujući koeficijente modela, njihovu statističku značajnost i ukupno prilagođavanje modela. Razmotrimo ključne komponente:
@@ -467,25 +472,6 @@ Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora 
 **KOD:**
 
 ```{r}
-# Učitavanje podataka
-data <- read.csv("car_specifications.csv")
-
-# Pretvaranje kategoričkih varijabli u faktore
-data$make <- as.factor(data$make)
-data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num.of.doors)
-data$body_style <- as.factor(data$body.style)
-data$drive_wheels <- as.factor(data$drive.wheels)
-data$engine_location <- as.factor(data$engine.location)
-data$fuel <- as.factor(data$fuel)
-data$country <- as.factor(data$country)
-data$continent <- as.factor(data$continent)
-
-# Prikazivanje razina engine_location
-levels(data$engine_location)
-```
-
-```{r}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
 model <- lm(price ~ horsepower + engine_location + engine.size  + engine.type , data = data)
@@ -511,25 +497,6 @@ Promatrajući procijenjene doprinose varijabli prediktoru, zaključujemo da konj
 Treći model koristi varijable: konjske snage, veličinu motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije, i najveću okretajnu brzinu motora kako bi predvidio cijenu automobila.
 
 **KOD:**
-
-```{r}
-# Učitavanje podataka
-data <- read.csv("car_specifications.csv")
-
-# Pretvaranje kategoričkih varijabli u faktore
-data$make <- as.factor(data$make)
-data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num.of.doors)
-data$body_style <- as.factor(data$body.style)
-data$drive_wheels <- as.factor(data$drive.wheels)
-data$engine_location <- as.factor(data$engine.location)
-data$fuel <- as.factor(data$fuel)
-data$country <- as.factor(data$country)
-data$continent <- as.factor(data$continent)
-
-# Prikazivanje razina engine_location
-levels(data$engine_location)
-```
 
 ```{r}
 # Izgradnja regresijskog modela
@@ -561,21 +528,6 @@ Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model 
 **KOD:**
 
 ```{r}
-# Učitavanje podataka
-data <- read.csv("car_specifications.csv")
-
-data$make <- as.factor(data$make)
-data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num.of.doors)
-data$body_style <- as.factor(data$body.style)
-data$drive_wheels <- as.factor(data$drive.wheels)
-data$engine_location <- as.factor(data$engine.location)
-data$fuel <- as.factor(data$fuel)
-data$country <- as.factor(data$country)
-data$continent <- as.factor(data$continent)
-```
-
-```{r}
 # sa levels printam sve kategorije ovih varijabli
 levels(data$engine_location)
 #levels(data$aspiration)
@@ -604,25 +556,6 @@ Regresijski model sastavljen je od sljedećih metrika: potrošnja goriva u grads
 **KOD:**
 
 ```{r}
-# Učitavanje podataka
-data <- read.csv("car_specifications.csv")
-
-data$make <- as.factor(data$make)
-data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num.of.doors)
-data$body_style <- as.factor(data$body.style)
-data$drive_wheels <- as.factor(data$drive.wheels)
-data$engine_location <- as.factor(data$engine.location)
-data$fuel <- as.factor(data$fuel)
-data$country <- as.factor(data$country)
-data$continent <- as.factor(data$continent)
-```
-
-```{r}
-# sa levels printam sve kategorije ovih varijabli
-#levels(data$make)
-#levels(data$aspiration)
-
 model <- lm(price ~ city.L.100km + highway.L.100km + peak.rpm, data = data)
 
 summary(model)
@@ -641,23 +574,7 @@ Iako model slabije objašnjava varijabilnost u podacima od predhodno korištenih
 Model se sastoji od jedne varijable - konjskih snaga. Model je na prvi pogled prejednostavan, no u kontekstu automobila ima smisla promotriti ga (automobili sa više konjskih snaga motora u pravilu su skuplji).
 
 **KOD:**
-
 ```{r}
-# Učitavanje podataka
-data <- read.csv("car_specifications.csv")
-
-data$make <- as.factor(data$make)
-data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num.of.doors)
-data$body_style <- as.factor(data$body.style)
-data$drive_wheels <- as.factor(data$drive.wheels)
-data$engine_location <- as.factor(data$engine.location)
-data$fuel <- as.factor(data$fuel)
-data$country <- as.factor(data$country)
-data$continent <- as.factor(data$continent)
-
-# sa levels printam sve kategorije ovih varijabli
-#levels(data$make)
 #levels(data$aspiration)
 
 model <- lm(price ~ horsepower, data = data)
