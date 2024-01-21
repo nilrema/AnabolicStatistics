@@ -2,9 +2,7 @@
 title: "Regression Analysis on Car Specifications"
 author: "Luka Babić, Dominik Barukčić, Andrija Merlin, Ivan Skukan"
 date: "2024-01-11"
-output:
-  html_document:
-    df_print: paged
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +14,7 @@ knitr::opts_chunk$set(results = 'hold')
 
 # Uvod, motivacija i opis problema
 
-U procesu kupovine novog automobila korisno je razmotriti njihove specifikacije kako bi se donijela ˇsto objektivnija odluka o modelu koji odgovara svim zahtjevima kupca. U tu su svrhu prikupljeni detaljni podatci o modelima 22 proizvodaˇca automobila razliˇcitih cjenovnih kategorija.
+U procesu kupovine novog automobila korisno je razmotriti njihove specifikacije kako bi se donijela što objektivnija odluka o modelu koji odgovara svim zahtjevima kupca. U tu su svrhu prikupljeni detaljni podatci o modelima 22 proizvodača automobila različitih cjenovnih kategorija.
 
 # Pitanje 1 - Snaga automobila ovisno o pogonu
 
@@ -90,10 +88,10 @@ Rezultati QQ-plotova ukazuju na odstupanja od pretpostavke normalnosti za varija
 
 Iz rezultata Kolmogorov-Smirnov testova za normalnost varijable 'horsepower' za različite kategorije pogona vozila (FWD, RWD i 4WD) možemo izvući sljedeće zaključke:
 
-1. Za ukupni skup podataka, p-vrijednost testa je vrlo niska (p-vrijednost ≈ 3.598e-08), što ukazuje na to da distribucija 'horsepower' varijable nije normalna.
-2. Za kategoriju FWD, p-vrijednost je niska (p-vrijednost ≈ 5.212e-08), što ukazuje na to da distribucija 'horsepower' za ovu kategoriju nije normalna.
-3. Za kategoriju RWD, p-vrijednost je niska (p-vrijednost ≈ 6.33e-07), što ukazuje na to da distribucija 'horsepower' za ovu kategoriju nije normalna.
-4. Za kategoriju 4WD, p-vrijednost je relativno visoka (p-vrijednost ≈ 0.2249), što znači da nema dovoljno dokaza da distribucija 'horsepower' za ovu kategoriju nije normalna.
+1. Za ukupni skup podataka, p-vrijednost testa je vrlo niska (p-vrijednost = 3.598e-08), što ukazuje na to da distribucija 'horsepower' varijable nije normalna.
+2. Za kategoriju FWD, p-vrijednost je niska (p-vrijednost = 5.212e-08), što ukazuje na to da distribucija 'horsepower' za ovu kategoriju nije normalna.
+3. Za kategoriju RWD, p-vrijednost je niska (p-vrijednost = 6.33e-07), što ukazuje na to da distribucija 'horsepower' za ovu kategoriju nije normalna.
+4. Za kategoriju 4WD, p-vrijednost je relativno visoka (p-vrijednost = 0.2249), što znači da nema dovoljno dokaza da distribucija 'horsepower' za ovu kategoriju nije normalna.
 
 Na temelju ovih rezultata, zaključujemo da varijabla 'horsepower' ne ispunjava pretpostavku normalnosti distribucije u svim kategorijama pogona vozila (FWD, RWD i 4WD). Posebno se ističe kategorija 4WD, gdje nema dovoljno dokaza da distribucija 'horsepower' nije normalna, ali i dalje postoje znakovi odstupanja od normalnosti u ostalim kategorijama.
 
