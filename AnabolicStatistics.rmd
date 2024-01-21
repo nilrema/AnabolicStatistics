@@ -1,0 +1,683 @@
+---
+title: "Regression Analysis on Car Specifications"
+author: "Luka Babić, Dominik Barukčić, Andrija Merlin, Ivan Skukan"
+date: "2024-01-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results = 'hold')
+```
+
+# Uvod, motivacija i opis problema
+
+U procesu kupovine novog automobila korisno je razmotriti njihove specifikacije kako bi se donijela ˇsto objektivnija odluka o modelu koji odgovara svim zahtjevima kupca. U tu su svrhu prikupljeni detaljni podatci o modelima 22 proizvodaˇca automobila razliˇcitih cjenovnih kategorija.
+
+# Pitanje 1 - Snaga automobila ovisno o pogonu
+
+**Je li snaga automobila s prednjim pogonom ve´ca od automobila s drugim vrstama pogona?**
+
+```{r}
+# Loading data
+path <- "car_specifications.csv"
+cardata <- read.csv(path)
+```
+
+## Provjera normalnosti podataka
+
+```{r}
+# QQ-plots to check the normality of 'horsepower' distribution for different drive types
+# QQ-plot for 'horsepower' for front-wheel drive (fwd)
+
+qqnorm(cardata$horsepower[cardata$drive.wheels == 'fwd'], main = "Q-Q Plot for FWD Horsepower")
+qqline(cardata$horsepower[cardata$drive.wheels == 'fwd'], col = "red")
+```
+
+```{r}
+# QQ-plot for 'horsepower' for rear-wheel drive (rwd)
+
+qqnorm(cardata$horsepower[cardata$drive.wheels == 'rwd'], main = "Q-Q Plot for RWD Horsepower")
+qqline(cardata$horsepower[cardata$drive.wheels == 'rwd'], col = "red")
+```
+
+```{r}
+# QQ-plot for 'horsepower' for four-wheel drive (4wd)
+
+qqnorm(cardata$horsepower[cardata$drive.wheels == '4wd'], main = "Q-Q Plot for 4WD Horsepower")
+qqline(cardata$horsepower[cardata$drive.wheels == '4wd'], col = "red")
+
+```
+
+## Kolmogorov-Smirnov test normalnosti
+
+```{r}
+# Load package for Lilliefors (Kolmogorov-Smirnov) normality test
+require(nortest)
+
+# Normality tests for 'horsepower' across different 'drive.wheels' categories
+lillie.test(cardata$horsepower)
+lillie.test(cardata$horsepower[cardata$drive.wheels == 'fwd'])
+lillie.test(cardata$horsepower[cardata$drive.wheels == 'rwd'])
+lillie.test(cardata$horsepower[cardata$drive.wheels == '4wd'])
+```
+
+# Kruskal-Wallisov test normalnosti
+
+```{r}
+# Kruskal-Wallis test to check for differences in 'horsepower' among the 3 drive wheel categories
+kruskal.test(horsepower ~ drive.wheels, data = cardata)
+```
+
+```{R}
+# Histograms of 'horsepower' for each 'drive.wheels' category
+
+hist(cardata$horsepower[cardata$drive.wheels=='fwd'], main="Histogram of FWD Horsepower", xlab="Horsepower")
+
+hist(cardata$horsepower[cardata$drive.wheels=='rwd'], main="Histogram of RWD Horsepower", xlab="Horsepower")
+
+hist(cardata$horsepower[cardata$drive.wheels=='4wd'], main="Histogram of 4WD Horsepower", xlab="Horsepower")
+```
+
+```{r}
+# Bartlett's test for homogeneity of variances across different 'drive.wheels' categories
+bartlett.test(cardata$horsepower ~ cardata$drive.wheels)
+```
+
+```{R}
+# Variance calculations for 'horsepower' in each 'drive.wheels' category
+var(cardata$horsepower[cardata$drive.wheels == 'fwd'])
+var(cardata$horsepower[cardata$drive.wheels == 'rwd'])
+var(cardata$horsepower[cardata$drive.wheels == '4wd'])
+```
+
+```{R}
+# Boxplot showing distribution of 'horsepower' across 'drive.wheels' categories
+boxplot(cardata$horsepower ~ cardata$drive.wheels, main="Boxplot of Horsepower by Drive Wheels", xlab="Drive Wheels", ylab="Horsepower", col="cyan")
+```
+
+```{R}
+# ANOVA to check if mean 'horsepower' differs significantly across 'drive.wheels' categories
+a = aov(cardata$horsepower ~ cardata$drive.wheels)
+summary(a)
+```
+
+```{r}
+# Fit a linear model to understand the relationship between horsepower and drive wheel categories
+model = lm(horsepower ~ drive.wheels, data = cardata)
+summary(model)
+
+# ANOVA test on the linear model, test overall significance of the model
+anova(model)
+```
+
+```{R}
+# T-test for 'horsepower' between fwd and rwd
+t.test(cardata$horsepower[cardata$drive.wheels == 'fwd'], 
+       cardata$horsepower[cardata$drive.wheels == 'rwd'])
+
+# T-test for 'horsepower' between rwd and 4wd
+t.test(cardata$horsepower[cardata$drive.wheels == 'rwd'], 
+       cardata$horsepower[cardata$drive.wheels == '4wd'])
+
+# T-test for 'horsepower' between fwd and 4wd
+t.test(cardata$horsepower[cardata$drive.wheels == 'fwd'], 
+       cardata$horsepower[cardata$drive.wheels == '4wd'])
+```
+
+```{r}
+# Installing and Loading ggplot2 package
+install.packages("ggplot2")
+library(ggplot2)
+
+# Density plot
+density_plot <- ggplot(cardata, aes(x = horsepower, fill = drive.wheels)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Horsepower by Drive Wheels",
+       x = "Horsepower",
+       y = "Density") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set1")
+
+# Scatter plot
+scatter_plot <- ggplot(cardata, aes(x = engine.size, y = horsepower)) +
+  geom_point() +
+  labs(title = "Scatter Plot of Engine Size vs Horsepower",
+       x = "Engine Size",
+       y = "Horsepower") +
+  theme_minimal()
+```
+
+# Pitanje 2 - Razlike u potrošnji automobila prema regiji
+
+**Postoje li razlike u potrošnji automobila prema regiji kojoj pripada proizvođač?**
+
+## Uvod
+
+Da odgovorimo na ovo pitanje, moramo analizirati podatke potrošnje goriva na 3 kontinenta. Zbog činjenice da imamo više od 2 regije, analiza varijance (ANOVA) će biti naš odabir modeliranja umjesto t-testa, ali prije toga ćemo morati testirati uvjete ANOVA-e.
+
+Učitavanje podataka:
+
+```{r}
+path <- "car_specifications.csv"
+data <- read.csv(path)
+
+data$continent = as.factor(data$continent)
+data$country = as.factor(data$country)
+head(data)
+```
+
+Nama su relevantni stupci 'city.L.100km', 'highway.L.100km' i 'continent'
+
+## Usporedba sredina
+
+***Provjera aritmetičkih sredina*** Prije nego krenemo sa ANOVA-om, možemo prvo usporediti aritmetičke sredine podataka. Ovo nije dovoljno da radimo bilo kakve konkretne zaključke, ali nam daje uvid u što bi možda očekivali. Također ćemo izračunati varijancu i standardnu devijaciju da imamo bolju ideju o izgledu raspršenosti podataka. Provjerimo sredine za pojedine kontinente sa boxplotom i sveukupnu sredinu i varijance kroz ispis:
+
+```{r}
+continents = unique(data$continent) #lista svih kontinenta
+
+overallMeanCity = mean(data$city.L.100km)
+overallMeanHighway = mean(data$highway.L.100km)
+overallVarCity = var(data$city.L.100km)
+overallVarHighway = var(data$highway.L.100km)
+
+cat("\n")
+print(sprintf("Aritmetička sredina potrošnje goriva u gradu: %f",overallMeanCity))
+print(sprintf("Aritmetička sredina potrošnje goriva na autocestama: %f",overallMeanHighway))
+
+print(sprintf("Sveukupna varijanca za gradove: %f",overallVarCity))
+print(sprintf("Standardna devijacija: %f",sqrt(overallVarCity)))
+
+print(sprintf("Sveukupna varijanca za autoceste: %f",overallVarHighway))
+print(sprintf("Standardna devijacija: %f",sqrt(overallVarHighway)))
+
+boxplot(data$city.L.100km ~ data$continent)
+boxplot(data$highway.L.100km ~ data$continent)
+
+```
+
+Već vidimo da je potrošnja u Europi u prosjeku veća nego druga dva kontinenta. Osim toga vidimo da je i disperzija nešto veća.
+
+**Uvjeti za ANOVA-u** Podsjetimo se. Želimo testirati ima li značajno odstupanje u sredinama potrošnje goriva na 3 kontinenta i zato prirodno biramo ANOVA-u. Kako bi proveli ANOVA test na podacima, prvo moramo biti sigurni da dani podaci zadovoljavaju sljedeće uvjete: 1. Normalnost 2. Nezavisnost 3. Homogenost varijanci
+
+## Lillie
+
+**Testiranje normalnosti** Prvo ćemo proveti test normalnosti. Zanimaju nas tablice za potrošnju goriva u gradu i na autocesti za svaki kontinent. Koristit ćemo Lilliefors test koji se temelji na Kolmogorov-Smirnov testu i Q-Q plot za vizualizaciju. Postavljamo hipoteze: $$H0: Dani\ podaci\ za\ potrošnju\ goriva\ imaju\ normalnu\ distribuciju\\
+H1: \neg H0$$
+
+Provedimo test:
+
+```{r}
+require(nortest) #potrebna biblioteka
+
+for (continent in continents) {
+  print(paste("For continent:",continent))
+  print(lillie.test(data$city.L.100km[data$continent == continent]))
+  print(lillie.test(data$highway.L.100km[data$continent == continent]))
+  titleHighway = paste(continent,", highway")
+  titleCity = paste(continent,", city")
+  hist(data$highway.L.100km[data$continent == continent],main=titleHighway)
+  hist(data$city.L.100km[data$continent == continent],main=titleCity)
+}
+```
+
+Dobili smo vrlo male p-vrijednosti. Sve su signifikantne na barem 0.05 razini, a većina je i ekstremnije od toga. Ovime možemo uvjereno odbaciti H0 i zaključiti kako podaci nisu normalno distribuirani. Osim toga, histogrami očito pokazuju kako podaci ne prate Gaussovu krivulju. Manjak normalnosti možemo vidjeti i na Q-Q plotu:
+
+```{r}
+qqnorm(data$highway.L.100km[data$continent == "Asia"],main="Asia, highways")
+qqline(data$highway.L.100km[data$continent == "Asia"])
+qqnorm(data$city.L.100km[data$continent == "Asia"],main = "Asia, cities")
+qqline(data$city.L.100km[data$continent == "Asia"])
+qqnorm(data$highway.L.100km[data$continent == "North America"],main = "NA,highways")
+qqline(data$highway.L.100km[data$continent == "North America"])
+qqnorm(data$city.L.100km[data$continent == "North America"],main = "NA, cities")
+qqline(data$city.L.100km[data$continent == "North America"])
+qqnorm(data$highway.L.100km[data$continent == "Europe"],main = "Europe, highways")
+qqline(data$highway.L.100km[data$continent == "Europe"])
+qqnorm(data$city.L.100km[data$continent == "Europe"],main = "Europe, cities")
+qqline(data$city.L.100km[data$continent == "Europe"])
+```
+
+Budući da nemamo zadovoljen uvjet normalnosti, ne možemo koristit ANOVA-u.
+
+**Kruskal-Wallis test** Okrećemo se alternativi ANOVA testa, Kruskal-Wallis test. To je neparametarski test pa ne trebamo da nam podaci prate određenu distribuciju. Jedini uvjet je da je broj podataka barem 5. Hipoteze se postavljaju na isti način kao u ANOVA-i.
+
+Hipoteze: $$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ kontinentima\ je\ jednaka\\
+H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$ Ovu istu hipotezu postavljamo za gradove i autoceste te zbog toga provodimo test dvaput.
+
+Provedimo Kruskal-Wallis test:
+
+```{r}
+filteredDataHighway = list(Asia_Highway = data$highway.L.100km[data$continent == "Asia"], NA_Highway = data$highway.L.100km[data$continent == "North America"], Europe_Highway = data$highway.L.100km[data$continent == "Europe"])
+filteredDataCity = list(Asia_City = data$city.L.100km[data$continent == "Asia"], NA_City = data$city.L.100km[data$continent == "North America"], Europe_City = data$city.L.100km[data$continent == "Europe"])
+
+kruskalHighway = kruskal.test(filteredDataHighway)
+kruskalCity = kruskal.test(filteredDataCity)
+print(kruskalHighway)
+```
+
+Provjerimo prvo rezultat za potrošnju na autocestama. Dobili smo vrlo malu p-vrijednost, praktički je jednaka nuli, dakle bez sumnje odbacujemo H0 i zaključujemo da se barem jedna očekivana vrijednost razlikuje od ostalih.
+
+Provjerimo sad rezultat za gradove:
+
+```{r}
+print(kruskalCity)
+```
+
+Opet imamo p-vrijednost koja je efektivno jednaka nuli. Za potrošnju u gradovima također odbacujemo H0.
+
+Na temelju boxplotova koje smo ranije vidjeli, najvjerojatnije su podaci za Europu zaslužni za odbijanje H0. Možemo koristiti Dunnov test da vidimo između kojih grupa su razlike značajne. Dunnov test ima istu hipotezu kao Kruskal-Wallis test.
+
+```{r}
+require(dunn.test)
+dunn = dunn.test(data$highway.L.100km , g = data$continent,method="bonferroni")
+print(dunn)
+dunn = dunn.test(data$city.L.100km, g = data$continent, method = "bonferroni")
+```
+
+Zanima nas "p-adjusted" redak koji se također može vidjeti u tablici(drugi redak u svakoj čeliji). Za oba testa imamo isti zaključak Vidimo da je p-adjusted za North_America-Asia relativno velik i nije signifikantan na niti jednoj tipičnoj razini. Međutim, imamo vrlo male p-adjusted vrijednosti između Europe i bilo kojeg drugog kontinenta. Ovime možemo zaključiti da je odbijanje nul hipoteze Kruskal-Wallis testa bilo primarno zbog razine potrošnje u Europi.
+
+## Subregionalno
+
+**Testiranje među regijama u Europi** Budući da Azija i Sjeverna Amerika imaju relativno slične potrošnje, ne zanima nas detaljnije subregionalno testiranje. Osim toga, ti kontinenti imaju samo po jednu državu u podacima, dakle ni ne možemo podjeliti na manje regije. Međutim, Europu, koja je imala poprilično veliku potrošnju goriva i mnogo država, možemo podijeliti na manje regije, no ne možemo testirati na pojedinim državama jer za neke nemamo dovoljno podataka. Opet ćemo napraviti Kruskal-Wallis test i, po potrebi, Dunnov test. Ovime možemo probati zaključiti ako se u nekim regijama više troši.
+
+***Podjela na subregije*** Trebamo odrediti kako želimo grupirati države. Ciljat ćemo na podjelu koja otprilike dijeli Europu na zapadnu, sjevernu i središnju Europu. Budući da za Italiju i UK nemamo dovoljno podataka, grupirat ćemo ih sa Francuskom i Švedskom respektivno. Francuska i Italija će predstavljati zapadnu, UK i Švedska sjevernu, a Njemačka središnju Europu.
+
+```{r}
+westEuRegions = c("France","Italy")
+northEuRegions = c("United Kingdom","Sweden")
+centralEuRegions = c("Germany")
+
+westEuData = subset(data, country %in% westEuRegions, select = c(highway.L.100km,city.L.100km,country))
+northEuData = subset(data, country %in% northEuRegions, select = c(highway.L.100km,city.L.100km,country))
+centralEuData = subset(data, country %in% centralEuRegions, select = c(highway.L.100km,city.L.100km,country))
+
+europeDataHighway = list(west = westEuData$highway.L.100km, north = northEuData$highway.L.100km, central = centralEuData$highway.L.100km)
+europeDataCity = list(west = westEuData$city.L.100km, northEuData$city.L.100km, central = centralEuData$city.L.100km)
+
+```
+
+Hipoteze su na istu logiku: $$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ podregijama\ je\ jednaka\\
+H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$
+
+Provedimo testove:
+
+```{r}
+euKruskalHighway = kruskal.test(europeDataHighway)
+euKruskalCity = kruskal.test(europeDataCity)
+
+print(euKruskalHighway)
+print(euKruskalCity)
+```
+
+Velika p-vrijednost za oba testa nam govori da nema značajne razlike među ovim regijama Europe. Za kraj ćemo napraviti boxplot potrošnje goriva za svaku pojedinu europsku državu.
+
+```{r}
+eu = c("Germany","France","Italy","United Kingdom","Sweden")
+dataCopy = data
+dataCopy$country = factor(data$country, levels=eu)
+euData = subset(dataCopy, country %in% eu, select = c(highway.L.100km,city.L.100km,country))
+boxplot(euData$highway.L.100km ~ euData$country)
+boxplot(euData$city.L.100km ~ euData$country)
+```
+
+Za neke države imamo jako malo podataka, ali možemo vidjeti da UK značajno odstupa od ostalih država. Vjerojatno jer su u datasetu uključeni Jaguari sa jačim motorima koji više troše. Zaključujemo da nisu određene europske države zaslužne za značajno odstupanje u prosječnoj potrošnji goriva, već vidimo da se generalno više troši, bilo u gradovima bilo na autocestama.
+
+# Pitanje 3 - Predvidanje cijene automobila
+**Mozemo li temeljem drugih dostupnih varijabli predvidjeti cijenu automobila? Koja varijabla pritom ima najznacajniji utjecaj?**
+
+Izrađeno je ukupno šest regresijskih modela, svaki kombinira različite karakteristike automobila kako bi se pronašla veza između cijene i tih karakteristika. Cilj je sastaviti najbolji model koji predviđa cijenu automobila.
+
+## Interpretacija plotova
+
+Uz modele su priloženi tzv. Residual vs Fitted te Normal Q-Q grafovi.
+
+**Residual vs Fitted** graf provjerava pretpostavku da ostaci (**reziduali**) imaju srednju vrijednost nula na svim razinama nezavisnih varijabli. Željeni izgled grafa je nasumična raspršenost tocaka, bez jasno vidljivog obrasca. Obrasci ukazuju na to da model nije adekvatno objasnio neki aspekt korištene strukture podataka. Nasumično raspršene točke oko horizontalne linije na nuli sugeriraju da su predviđanja modela nepristrana na svim razinama nezavisnih varijabli. To implicira da je model prikladan za podatke duž cijelog raspona predviđenih vrijednosti. Odsutnost obrazaca ili sustavnih struktura sugerira da su reziduali modela raspoređeni nasumično, što podupire pretpostavku da je odnos između nezavisnih varijabli i zavisne varijable linearan.
+
+**Zakrivljeni oblik:** Zakrivljen odnos u ostacima (kao oblik slova U ili obrnuto U) može sugerirati da postoji nelinearan odnos između nezavisnih varijabli i zavisne varijable koji nije uhvaćen modelom.
+
+**Raširenje/skupljanje (heteroscedastičnost):** Ako se ostaci šire ili skupljaju kako se povećavaju ili smanjuju predviđene vrijednosti, to ukazuje na nejednaku varijancu (heteroscedastičnost), što krši jednu od pretpostavki linearne regresije.
+
+## Interpretacija ispisa
+
+Ispis pruža rezultate analize linearne regresije, uključujući koeficijente modela, njihovu statističku značajnost i ukupno prilagođavanje modela. Razmotrimo ključne komponente:
+
+**Koeficijenti**: Za svaki član u modelu dobivamo **procjenu veličine učinka** (Estimate), **standardnu pogrešku te procjene** (Std. Error) i **t-vrijednost**, koja je procjena podijeljena s njezinom standardnom pogreškom. **Stupac Pr(\>\|t\|)** prikazuje p-vrijednost za t-test protiv nulte hipoteze da je koeficijent nula (nema učinka). Određeni članovi su statistički značajni prediktori cijene (Pr(\>\|t\|) je manje od npr. 0,05), pri čemu ce određeni imati posebno malu p-vrijednost, što ukazuje na snažan odnos s cijenom. Određeni članovi neće biti statistički značajni na razini od npr. 0,05 (p-vrijednost je npr. 0,0641).
+
+**Oznake značajnosti:** Zvjezdice označavaju razinu značajnosti, s više zvjezdica označava višu statističku značajnost.
+
+**Standardna pogreška ostataka:** Ovo je procjena standardne devijacije ostataka (reziduala), što je otprilike prosječna udaljenost na kojoj se promatrane vrijednosti nalaze od regresijske linije.
+
+**Multiple R-kvadrat i Prilagođeni R-kvadrat:** Multiple R-kvadrat od npr. 0,7661 ukazuje da se otprilike 76,61% varijabilnosti cijene može objasniti modelom. To je mjera dobrog prilagođavanja modela. Prilagođeni R-kvadrat je prilagođen broju prediktora u modelu i preciznija je mjera dobrog prilagođavanja. Za ovaj model može iznositi npr. 0,7625.
+
+**F-statistika i njezina p-vrijednost:** F-statistika testira nultu hipotezu da su svi koeficijenti regresije jednaki nuli (tj. model nema objašnjavajuću snagu). Vrlo mala p-vrijednost ukazuje da je model statistički značajan i da je barem jedan od prediktora povezan s cijenom.
+
+## Regresijski modeli
+
+### Karakteristike motora
+
+Sastavljena su tri regresijska modela, svaki od kojih tvori različitu kombinaciju karakteristika motora.
+
+#### Model 1
+
+Prvi model koristi varijable: konjske snage, veličinu motora, broj cilindara te sustav goriva kako bi predvidio cijenu automobila.
+
+\*KOD:\*\*
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+```{r}
+# Izgradnja regresijskog modela
+# Ovaj model sastoji se od razlicitih karakteristika motora
+ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_system, data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+
+Promatrajući procijenjene doprinose varijable prediktoru, zaključujemo da konjske snage te veličina motora značajno doprinose određivanju cijene automobila. Također, 12 cilindara značajno utječe na cijenu automobila. R-squared metrike govore nam da sastavljeni model objasnjava 85.95%, odnosno, 84.80% varijabilnosti. P-vrijednost je vrlo niska, što na nam govori da je model statistički značajan.
+
+```{r}
+# Prikazivanje dijagnostike modela
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+#### Model 2
+
+Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora te tip motora kako bi predvidio cijenu automobila.
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+```{r}
+# Izgradnja regresijskog modela
+# Ovaj model kombinira različite karakteristike motora
+model <- lm(price ~ horsepower + engine_location + engine_size  + engine_type , data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+
+```{r}
+# Prikazivanje dijagnostike modela
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+Promatrajući procijenjene doprinose varijabli prediktoru, zaključujemo da konjske snage, lokacija motora i veličina motora značajno doprinose određivanju cijene automobila. Tip motora "rotor" također ima značajan utjecaj na cijenu automobila. R-squared metrike govore nam da sastavljeni model objašnjava 83.72%, odnosno, 83.04% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
+
+#### Model 3
+
+Treći model koristi varijable: konjske snage, veličinu motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije, i najveću okretajnu brzinu motora kako bi predvidio cijenu automobila.
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+# Pretvaranje kategoričkih varijabli u faktore
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# Prikazivanje razina engine_location
+levels(data$engine_location)
+```
+
+```{r}
+# Izgradnja regresijskog modela
+# Ovaj model kombinira različite karakteristike motora
+model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) + 
+             as.factor(num_of_cylinders) + bore + stroke + compression_ratio + peak_rpm, 
+            data = data)
+
+# Prikazivanje sažetka modela
+summary(model)
+```
+
+Promatrajući procijenjene doprinose varijablama prediktorima, zaključujemo da konjske snage, veličina motora, tip motora, broj cilindara, promjer cilindra, hod klipa, omjer kompresije i najveća okretajna brzina motora značajno doprinose određivanju cijene automobila. R-squared metrike govore nam da sastavljeni model objašnjava 91.46%, odnosno, 90.74% varijabilnosti. P-vrijednost je vrlo niska, što nam govori da je model statistički značajan.
+
+```{r}
+# Prikazivanje dijagnostike modela
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+### Marka automobila
+
+Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model je vrlo jednostavan, no u kontekstu automobila smisleno je promatrati moć takvog modela.
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+```
+
+```{r}
+# sa levels printam sve kategorije ovih varijabli
+levels(data$engine_location)
+#levels(data$aspiration)
+
+model <- lm(price ~ make, data = data)
+
+summary(model)
+```
+
+Promatrajuci koeficijente zakljucujemo da sljedeće marke znacajno povećavaju cijenu automobila: BMW, Jaguar, Mercedes-Benz i Porsche. Marke koje smanjuju cijenu automobila (u usporedbi s referentnom markom) su: Honda, Mitsubishi, Subaru, Toyota, Volkswagen, Dodge i Chevrolet. R-squared metrika govori nam da model objašnjava 79.59% varijabilnosti u cijenama automobila, što je vrlo značajno za model sa samo jednom varijablom. F statistika ukazuje na značajnost modela, a p-vrijednost vrlo je niska.
+
+```{r}
+# Prikazivanje dijagnostike modela
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+### Metrike performansi
+
+Regresijski model sastavljen je od sljedećih metrika: potrošnja goriva u gradskoj vožnji, potrošnja goriva na autocesti te maksimalan broj okretaja. Metrike su usko vezane uz performanse automobila.
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+```
+
+```{r}
+# sa levels printam sve kategorije ovih varijabli
+#levels(data$make)
+#levels(data$aspiration)
+
+model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+
+summary(model)
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+Iako model slabije objašnjava varijabilnost u podacima od predhodno korištenih modela, gledajući F-statistiku primjećujemo da je model i dalje statistički znacajan. Manje je kompleksan od nekih predhodno korištenih, sto ga čini interpretabilnijim. Varijabla koja je statistički najznačajnija je maksimalan broj okretaja motora. Model objašnjava 67.21% varijabilnosti podataka.
+
+### Konjske snage
+
+Model se sastoji od jedne varijable - konjskih snaga. Model je na prvi pogled prejednostavan, no u kontekstu automobila ima smisla promotriti ga (automobili sa više konjskih snaga motora u pravilu su skuplji).
+
+**KOD:**
+
+```{r}
+# Učitavanje podataka
+data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+
+data$make <- as.factor(data$make)
+data$aspiration <- as.factor(data$aspiration)
+data$num_of_doors <- as.factor(data$num_of_doors)
+data$body_style <- as.factor(data$body_style)
+data$drive_wheels <- as.factor(data$drive_wheels)
+data$engine_location <- as.factor(data$engine_location)
+data$fuel <- as.factor(data$fuel)
+data$country <- as.factor(data$country)
+data$continent <- as.factor(data$continent)
+
+# sa levels printam sve kategorije ovih varijabli
+#levels(data$make)
+#levels(data$aspiration)
+
+model <- lm(price ~ horsepower, data = data)
+
+summary(model)
+# Residuals vs. Fitted plot
+plot(model, which = 1, main = "Residuals vs. Fitted")
+
+# Normal Q-Q plot
+qqnorm(resid(model))
+qqline(resid(model), col = 2)
+```
+
+Model objašnjava 65.7% varijabilnosti u cijenama automobila, brojka je slična modelu koji koristi metrike performanse za predviđanje cijene koji smo promatrali maloprije. F statistika nam govori da je model statistički značajan (p vrijednost je vrlo mala). Iako model koristi samo jednu varijablu za predikciju cijene, multiple R-squared je relativno visok te pokazuje na dobru sposobnost objasnjavanja varijabilnosti u cijenama vozila.
+
+# Pitanje 4 - Analiza omjera kompresije izmedu atmosferskih motora i motora s turbopunjačem
+**Postoji li razlika u omjeru kompresije izmedu atmosferskih motora i motora s turbopunjačem?**
+
+## 1. Učitavanje potrebnih biblioteka i podataka
+
+```{r}
+path <- "car_specifications.csv"
+podaci <- read.csv(path)
+```
+
+## 2. Filtriranje podataka
+
+```{r}
+# Filtriram podatke prema tipu motora
+atmosferski_motori <- podaci %>% filter(aspiration == "std")
+turbopunjaci <- podaci %>% filter(aspiration == "turbo")
+```
+
+## 3. Deskriptivna statistika
+
+```{r}
+# Izračun osnovne statističke mjere za omjer kompresije
+summary(atmosferski_motori$compression.ratio)
+summary(turbopunjaci$compression.ratio)
+```
+
+## 4. Testiranje hipoteza
+
+```{r}
+# Testiranje razlike u omjeru kompresije između dvije grupe motora
+t.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
+```
+
+Ili, ako pretpostavke t-testa nisu zadovoljene, možemo koristiti Mann-Whitney U test:
+
+```{r}
+wilcox.test(atmosferski_motori$compression.ratio, turbopunjaci$compression.ratio)
+```
+
+## 5. Vizualizacija
+
+```{r}
+# Vizualizacija razlika u omjeru kompresije između dvije grupe motora
+ggplot() +
+  geom_boxplot(data = rbind(atmosferski_motori %>% mutate(Type = "Atmosferski motori"),
+                            turbopunjaci %>% mutate(Type = "Turbopunjaci")),
+               aes(x = Type, y = compression.ratio)) +
+  labs(title = "Omjer kompresije prema tipu motora",
+       x = "Tip motora",
+       y = "Omjer kompresije") +
+  theme_minimal()
+```
+
+## 6. Zaključak:
+
+Na temelju provedenog Wilcoxonovog testa rangova s korekcijom kontinuiteta, ne možemo odbaciti nultu hipotezu na razini značajnosti od 0,05. P-vrijednost iznosi 0,0813, što je veće od konvencionalnog praga značajnosti od 0,05.
+
+To sugerira da nema statistički značajne razlike u omjeru kompresije između atmosferskih motora i motora s turbopunjačem na razini značajnosti od 0,05.
+
+Međutim, važno je napomenuti da je p-vrijednost vrlo blizu pragu značajnosti od 0,05, što znači da postoji mala vjerojatnost (8,13%) da bismo dobili ovakav ili ekstremniji uzorak ako je nulta hipoteza istinita. U praksi, ovo bi moglo sugerirati potrebu za daljnjim istraživanjem ili povećanjem veličine uzorka kako bismo s većom sigurnošću potvrdili ove rezultate.
+
+Stoga, na temelju dostupnih podataka, ne možemo potvrditi da postoji razlika u omjeru kompresije između atmosferskih motora i motora s turbopunjačem.
