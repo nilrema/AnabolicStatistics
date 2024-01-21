@@ -1540,8 +1540,8 @@ head(cardata)</code></pre>
 ## 5 17450        13.06           10.68 petrol Germany    Europe
 ## 6 15250        12.37            9.40 petrol Germany    Europe</code></pre>
 </div>
-<div id="histogrami" class="section level2">
-<h2>Histogrami</h2>
+<div id="histogrami-distribucije-snage-motora" class="section level2">
+<h2>Histogrami distribucije snage motora</h2>
 <p>Generirajmo histograme koji vizualno prikazuju distribuciju snage
 motore za svaku kategoriju pogona automobila - prednji (FWD), zadnji
 (RWD) i pogon na sve kotače (4WD). Histogrami omogućuju vizualnu analizu
@@ -1566,12 +1566,12 @@ snage.</p>
 oko srednjeg raspona snage, s vrhom oko 150 konjskih snaga. Iako se
 snaga proteže do viših vrijednosti, većina automobila s RWD pogonom ima
 snagu unutar srednjeg raspona.</p>
-<p>Ove distribucije ukazuju na različite filozofije dizajna i tržišne
-ciljeve proizvođača za svaki tip pogona. Na primjer, 4WD vozila su
-usmjerena na performanse i sposobnost terenske vožnje, dok su FWD vozila
-više usmjerena na ekonomičnost i praktičnost za svakodnevnu upotrebu.
-RWD vozila usmjerena da budu sportski automobili koji zahtijevaju
-uravnoteženu raspodjelu snage.</p>
+<p>Ove distribucije ukazuju na različiti dizajn i cilj proizvođača za
+svaki tip pogona. Na primjer, 4WD vozila su usmjerena na performanse i
+sposobnost terenske vožnje, dok su FWD vozila više usmjerena na
+ekonomičnost i praktičnost za svakodnevnu upotrebu. RWD vozila usmjerena
+da budu sportski automobili koji zahtijevaju uravnoteženu raspodjelu
+snage.</p>
 </div>
 <div id="provjera-normalnosti-podataka" class="section level2">
 <h2>Provjera normalnosti podataka</h2>
@@ -1653,8 +1653,8 @@ kategorijama.</p>
 izgledaju “loše”, dalje ćemo provesti Barlettov test i t-testove kao da
 su podaci normalni.</p>
 </div>
-<div id="barlettov-test" class="section level2">
-<h2>Barlettov test</h2>
+<div id="varijabilnost-snage-motora" class="section level2">
+<h2>Varijabilnost snage motora</h2>
 <p>U ovom dijelu analize primjenjujemo Barlettov test kako bismo
 provjerili homogenost varijanci varijable ‘horsepower’ u različitim
 kategorijama pogona vozila (FWD, RWD i 4WD). Također računamo varijance
@@ -1669,7 +1669,7 @@ sljedeće uvjete:</p>
 <li>Homogenost varijanci</li>
 <li>Nezavisnost</li>
 </ol>
-<p><strong>Huzpoteze</strong></p>
+<p><strong>Hipoteze</strong></p>
 <p><span class="math display">\[H0:\ Nema\ statistički\ značajnih\
 razlika\ u\ varijancama\ između\ grupa.
 \\
@@ -1748,7 +1748,7 @@ izvanrednih vrijednosti, i iznad i ispod kutije. Izvanredne vrijednosti
 iznad gornjeg whiskera ukazuju da neka vozila s pogonom na stražnjim
 kotačima imaju iznimno visoku snagu motora.</p>
 <p>Općenito, vozila s pogonom na stražnjim kotačima obično imaju veću
-snagu motora s širim rasponom vrijednosti, dok vozila s pogonom na sva
+snagu motora sa širim rasponom vrijednosti, dok vozila s pogonom na sva
 četiri kotača imaju manju varijabilnost i vozila s prednjim pogonom
 obično imaju manju snagu motora, s nekim iznimkama. Prisutnost
 izvanrednih vrijednosti, posebno u kategoriji vozila s pogonom na
@@ -1756,10 +1756,10 @@ stražnjim kotačima, sugerira da postoje vozila s vrijednostima snage
 motora koje se značajno razlikuju od tipičnog raspona vrijednosti unutar
 te kategorije pogona na kotačima.</p>
 </div>
-<div id="kruskal-wallis-test" class="section level2">
-<h2>Kruskal-Wallis test</h2>
+<div id="razlike-u-snazi-motora" class="section level2">
+<h2>Razlike u snazi motora</h2>
 <p>Kako bismo istražili moguće razlike u snazi motora (‘horsepower’)
-između različitih kategorija pogona vozila, primjenili smo
+između različitih kategorija pogona vozila, primijenili smo
 Kruskal-Wallis test. Ovaj test omogućuje statističku provjeru postojanja
 značajnih varijacija u snazi motora među tri različite kategorije
 pogonskih točkica.</p>
@@ -1792,8 +1792,8 @@ boxplotova, gdje je uočeno da vozila sa stražnjim pogonom obično imaju
 veću snagu motora, što sugerira da postoji razlika u snazi motora između
 različitih vrsta pogona.</p>
 </div>
-<div id="t-test" class="section level2">
-<h2>T-test</h2>
+<div id="usporedba-s.m.-za-sve-tipove-pogona" class="section level2">
+<h2>Usporedba s.m. za sve tipove pogona</h2>
 <p>Provodimo t-testove za usporedbu snage motora između različitih vrsta
 pogona vozila. Uspoređujemo snagu motora između vozila s prednjim
 pogonom (FWD), stražnjim pogonom (RWD) i pogonom na sva četiri kotača
@@ -1871,15 +1871,15 @@ značajne razlike u snazi motora između ova dva tipa pogona.</p>
 <p>Intervali pouzdanosti dodatno podupiru ove rezultate, prikazujući
 značajnu i nepreklapajuću razliku za prve dvije usporedbe te vrlo uzak i
 preklapajući raspon za usporedbu između FWD i 4WD vozila. Te su razlike
-prikazane u scatter plotovima u daljnoj analizi.</p>
-<p>Rezulati analize dokazuju da dok vozila s pogonom na stražnjim
+prikazane u scatter plotovima u daljnjoj analizi.</p>
+<p>Rezultati analize dokazuju da dok vozila s pogonom na stražnjim
 kotačima obično imaju veću snagu motora od vozila s prednjim pogonom i
 vozila s pogonom na sva četiri kotača, vozila s prednjim pogonom i
 vozila s pogonom na sva četiri kotača su slična po snazi motora u
 prosjeku.</p>
 </div>
-<div id="plotovi" class="section level2">
-<h2>Plotovi</h2>
+<div id="vizualizacija-podataka" class="section level2">
+<h2>Vizualizacija podataka</h2>
 <p>Scatter plot se koristi za vizualizaciju odnosa između veličine
 motora i snage motora te za identifikaciju korelacija između njih.
 Density plot prikazuje kako se snaga motora distribuira unutar

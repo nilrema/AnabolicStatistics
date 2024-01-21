@@ -31,7 +31,7 @@ cardata = na.omit(cardata)  # Remove any rows with missing values
 head(cardata)
 ```
 
-## Histogrami
+## Histogrami distribucije snage motora
 
 Generirajmo histograme koji vizualno prikazuju distribuciju snage motore za svaku kategoriju pogona automobila - prednji (FWD), zadnji (RWD) i pogon na sve kotače (4WD).
 Histogrami omogućuju vizualnu analizu razlika u snazi između ovih triju kategorija.
@@ -94,7 +94,7 @@ Na temelju ovih rezultata, zaključujemo da varijabla 'horsepower' ne ispunjava 
 
 Unatoč padovima KS testova, uz naputak asistenta da QQ-plotovi ne izgledaju "loše", dalje ćemo provesti Barlettov test i t-testove kao da su podaci normalni.
 
-## Barlettov test
+## Varijabilnost snage motora
 
 U ovom dijelu analize primjenjujemo Barlettov test kako bismo provjerili homogenost varijanci varijable 'horsepower' u različitim kategorijama pogona vozila (FWD, RWD i 4WD). Također računamo varijance za 'horsepower' u svakoj od tih kategorija i prikazujemo distribuciju 'horsepower' putem boxplota kako bismo bolje razumjeli varijabilnost podataka unutar svake kategorije.
 
@@ -162,7 +162,7 @@ Postoji nekoliko izvanrednih vrijednosti, i iznad i ispod kutije. Izvanredne vri
 
 Općenito, vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora sa širim rasponom vrijednosti, dok vozila s pogonom na sva četiri kotača imaju manju varijabilnost i vozila s prednjim pogonom obično imaju manju snagu motora, s nekim iznimkama. Prisutnost izvanrednih vrijednosti, posebno u kategoriji vozila s pogonom na stražnjim kotačima, sugerira da postoje vozila s vrijednostima snage motora koje se značajno razlikuju od tipičnog raspona vrijednosti unutar te kategorije pogona na kotačima.
 
-## Kruskal-Wallis test
+## Razlike u snazi motora
 
 Kako bismo istražili moguće razlike u snazi motora ('horsepower') između različitih kategorija pogona vozila, primijenili smo Kruskal-Wallis test. Ovaj test omogućuje statističku provjeru postojanja značajnih varijacija u snazi motora među tri različite kategorije pogonskih točkica.
 
@@ -183,7 +183,7 @@ kruskal.test(horsepower ~ drive.wheels, data = cardata)
 
 Test daje statističku vrijednost chi-kvadrat od 76,417 sa 2 stupnja slobode. Izuzetno mala p-vrijednost, manja od 2.2e-16, ukazuje na statistički značajnu razliku u raspodjeli snage motora među tri kategorije pogonska. S obzirom na rezultate, možemo odbaciti nultu hipotezu da je medijan snage motora isti za kategorije 4WD, FWD i RWD. Drugim riječima, nije istina da nema statistički značajnih razlika između grupa. Zaključak ovog testa podupire vizualne nalaze iz boxplotova, gdje je uočeno da vozila sa stražnjim pogonom obično imaju veću snagu motora, što sugerira da postoji razlika u snazi motora između različitih vrsta pogona.
 
-## T-test
+## Usporedba s.m. za sve tipove pogona
 
 Provodimo t-testove za usporedbu snage motora između različitih vrsta pogona vozila. Uspoređujemo snagu motora između vozila s prednjim pogonom (FWD), stražnjim pogonom (RWD) i pogonom na sva četiri kotača (4WD). Cilj ovih testova je provjeriti postoje li statistički značajne razlike u snazi motora između navedenih vrsta pogona vozila. Rezultati testova pružit će nam bolji uvid u to kako različite vrste pogona mogu utjecati na snagu motora u vozilima.
 
@@ -219,7 +219,7 @@ Intervali pouzdanosti dodatno podupiru ove rezultate, prikazujući značajnu i n
 
 Rezultati analize dokazuju da dok vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora od vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača, vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača su slična po snazi motora u prosjeku.
 
-## Plotovi
+## Vizualizacija podataka
 
 Scatter plot se koristi za vizualizaciju odnosa između veličine motora i snage motora te za identifikaciju korelacija između njih. Density plot prikazuje kako se snaga motora distribuira unutar različitih tipova pogonska vozila, omogućujući usporedbu distribucija između tih kategorija. Oba grafikona pomažu u boljem razumijevanju podataka i otkrivanju obrazaca u specifikacijama vozila. Scatter plot pomaže u prepoznavanju odnosa između varijabli, dok density plot omogućuje analizu varijabilnosti snage motora među različitim grupama vozila.
 

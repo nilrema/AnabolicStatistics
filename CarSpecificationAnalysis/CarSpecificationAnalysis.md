@@ -61,7 +61,7 @@ head(cardata)
 ## 6 15250        12.37            9.40 petrol Germany    Europe
 ```
 
-## Histogrami
+## Histogrami distribucije snage motora
 
 Generirajmo histograme koji vizualno prikazuju distribuciju snage motore za svaku kategoriju pogona automobila - prednji (FWD), zadnji (RWD) i pogon na sve kotače (4WD).
 Histogrami omogućuju vizualnu analizu razlika u snazi između ovih triju kategorija.
@@ -92,7 +92,7 @@ Za FWD vozila, histogram prikazuje vrlo visoku frekvenciju u nižem rasponu snag
 
 Za RWD vozila, histogram prikazuje distribuciju srednje koncentriranu oko srednjeg raspona snage, s vrhom oko 150 konjskih snaga. Iako se snaga proteže do viših vrijednosti, većina automobila s RWD pogonom ima snagu unutar srednjeg raspona.
 
-Ove distribucije ukazuju na različite filozofije dizajna i tržišne ciljeve proizvođača za svaki tip pogona. Na primjer, 4WD vozila su usmjerena na performanse i sposobnost terenske vožnje, dok su FWD vozila više usmjerena na ekonomičnost i praktičnost za svakodnevnu upotrebu. RWD vozila usmjerena da budu sportski automobili koji zahtijevaju uravnoteženu raspodjelu snage.
+Ove distribucije ukazuju na različiti dizajn i cilj proizvođača za svaki tip pogona. Na primjer, 4WD vozila su usmjerena na performanse i sposobnost terenske vožnje, dok su FWD vozila više usmjerena na ekonomičnost i praktičnost za svakodnevnu upotrebu. RWD vozila usmjerena da budu sportski automobili koji zahtijevaju uravnoteženu raspodjelu snage.
 
 ## Provjera normalnosti podataka
 
@@ -195,7 +195,7 @@ Na temelju ovih rezultata, zaključujemo da varijabla 'horsepower' ne ispunjava 
 
 Unatoč padovima KS testova, uz naputak asistenta da QQ-plotovi ne izgledaju "loše", dalje ćemo provesti Barlettov test i t-testove kao da su podaci normalni.
 
-## Barlettov test
+## Varijabilnost snage motora
 
 U ovom dijelu analize primjenjujemo Barlettov test kako bismo provjerili homogenost varijanci varijable 'horsepower' u različitim kategorijama pogona vozila (FWD, RWD i 4WD). Također računamo varijance za 'horsepower' u svakoj od tih kategorija i prikazujemo distribuciju 'horsepower' putem boxplota kako bismo bolje razumjeli varijabilnost podataka unutar svake kategorije.
 
@@ -206,7 +206,7 @@ Kako bi proveli Barlettov test na podacima, prvo moramo biti sigurni da dani pod
 2. Homogenost varijanci
 3. Nezavisnost
 
-**Huzpoteze**
+**Hipoteze**
 
 $$H0:\ Nema\ statistički\ značajnih\ razlika\ u\ varijancama\ između\ grupa.
 \\
@@ -294,11 +294,11 @@ Ova kategorija ima najširi IQR, što sugerira širok raspon vrijednosti snage m
 Medijan je puno viši u usporedbi s druga dva, i nalazi se iznad 150 konjskih snaga.
 Postoji nekoliko izvanrednih vrijednosti, i iznad i ispod kutije. Izvanredne vrijednosti iznad gornjeg whiskera ukazuju da neka vozila s pogonom na stražnjim kotačima imaju iznimno visoku snagu motora.
 
-Općenito, vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora s širim rasponom vrijednosti, dok vozila s pogonom na sva četiri kotača imaju manju varijabilnost i vozila s prednjim pogonom obično imaju manju snagu motora, s nekim iznimkama. Prisutnost izvanrednih vrijednosti, posebno u kategoriji vozila s pogonom na stražnjim kotačima, sugerira da postoje vozila s vrijednostima snage motora koje se značajno razlikuju od tipičnog raspona vrijednosti unutar te kategorije pogona na kotačima.
+Općenito, vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora sa širim rasponom vrijednosti, dok vozila s pogonom na sva četiri kotača imaju manju varijabilnost i vozila s prednjim pogonom obično imaju manju snagu motora, s nekim iznimkama. Prisutnost izvanrednih vrijednosti, posebno u kategoriji vozila s pogonom na stražnjim kotačima, sugerira da postoje vozila s vrijednostima snage motora koje se značajno razlikuju od tipičnog raspona vrijednosti unutar te kategorije pogona na kotačima.
 
-## Kruskal-Wallis test
+## Razlike u snazi motora
 
-Kako bismo istražili moguće razlike u snazi motora ('horsepower') između različitih kategorija pogona vozila, primjenili smo Kruskal-Wallis test. Ovaj test omogućuje statističku provjeru postojanja značajnih varijacija u snazi motora među tri različite kategorije pogonskih točkica.
+Kako bismo istražili moguće razlike u snazi motora ('horsepower') između različitih kategorija pogona vozila, primijenili smo Kruskal-Wallis test. Ovaj test omogućuje statističku provjeru postojanja značajnih varijacija u snazi motora među tri različite kategorije pogonskih točkica.
 
 **Pretpostavke Kruskal-Wallis testa su sljedeće:**
 
@@ -326,7 +326,7 @@ kruskal.test(horsepower ~ drive.wheels, data = cardata)
 
 Test daje statističku vrijednost chi-kvadrat od 76,417 sa 2 stupnja slobode. Izuzetno mala p-vrijednost, manja od 2.2e-16, ukazuje na statistički značajnu razliku u raspodjeli snage motora među tri kategorije pogonska. S obzirom na rezultate, možemo odbaciti nultu hipotezu da je medijan snage motora isti za kategorije 4WD, FWD i RWD. Drugim riječima, nije istina da nema statistički značajnih razlika između grupa. Zaključak ovog testa podupire vizualne nalaze iz boxplotova, gdje je uočeno da vozila sa stražnjim pogonom obično imaju veću snagu motora, što sugerira da postoji razlika u snazi motora između različitih vrsta pogona.
 
-## T-test
+## Usporedba s.m. za sve tipove pogona
 
 Provodimo t-testove za usporedbu snage motora između različitih vrsta pogona vozila. Uspoređujemo snagu motora između vozila s prednjim pogonom (FWD), stražnjim pogonom (RWD) i pogonom na sva četiri kotača (4WD). Cilj ovih testova je provjeriti postoje li statistički značajne razlike u snazi motora između navedenih vrsta pogona vozila. Rezultati testova pružit će nam bolji uvid u to kako različite vrste pogona mogu utjecati na snagu motora u vozilima.
 
@@ -405,11 +405,11 @@ U usporedbi vozila s pogonom na stražnjim kotačima (RWD) i vozila s pogonom na
 
 Međutim, u usporedbi vozila vozila s prednjim pogonom (FWD) i vozila s pogonom na sva četiri kotača (4WD), statistika t-testa iznosi -0.12239 s visokom p-vrijednošću od 0.9055, što sugerira da nema statistički značajne razlike u snazi motora između ova dva tipa pogona.
 
-Intervali pouzdanosti dodatno podupiru ove rezultate, prikazujući značajnu i nepreklapajuću razliku za prve dvije usporedbe te vrlo uzak i preklapajući raspon za usporedbu između FWD i 4WD vozila. Te su razlike prikazane u scatter plotovima u daljnoj analizi.
+Intervali pouzdanosti dodatno podupiru ove rezultate, prikazujući značajnu i nepreklapajuću razliku za prve dvije usporedbe te vrlo uzak i preklapajući raspon za usporedbu između FWD i 4WD vozila. Te su razlike prikazane u scatter plotovima u daljnjoj analizi.
 
-Rezulati analize dokazuju da dok vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora od vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača, vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača su slična po snazi motora u prosjeku.
+Rezultati analize dokazuju da dok vozila s pogonom na stražnjim kotačima obično imaju veću snagu motora od vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača, vozila s prednjim pogonom i vozila s pogonom na sva četiri kotača su slična po snazi motora u prosjeku.
 
-## Plotovi
+## Vizualizacija podataka
 
 Scatter plot se koristi za vizualizaciju odnosa između veličine motora i snage motora te za identifikaciju korelacija između njih. Density plot prikazuje kako se snaga motora distribuira unutar različitih tipova pogonska vozila, omogućujući usporedbu distribucija između tih kategorija. Oba grafikona pomažu u boljem razumijevanju podataka i otkrivanju obrazaca u specifikacijama vozila. Scatter plot pomaže u prepoznavanju odnosa između varijabli, dok density plot omogućuje analizu varijabilnosti snage motora među različitim grupama vozila.
 
