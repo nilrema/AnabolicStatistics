@@ -63,17 +63,6 @@ png("graphs/boxplot_horsepower.png")
 boxplot(cardata$horsepower ~ cardata$drive.wheels, main="Boxplot of Horsepower by Drive Wheels", xlab="Drive Wheels", ylab="Horsepower", col="cyan")
 dev.off()
 
-# ANOVA to check if mean 'horsepower' differs significantly across 'drive.wheels' categories
-a = aov(cardata$horsepower ~ cardata$drive.wheels)
-summary(a)
-
-# Fit a linear model to understand the relationship between horsepower and drive wheel categories
-model = lm(horsepower ~ drive.wheels, data = cardata)
-summary(model)
-
-# ANOVA test on the linear model, test overall significance of the model
-anova(model)
-
 # T-test for 'horsepower' between fwd and rwd
 t.test(cardata$horsepower[cardata$drive.wheels == 'fwd'], 
        cardata$horsepower[cardata$drive.wheels == 'rwd'])
