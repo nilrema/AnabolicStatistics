@@ -2,7 +2,10 @@
 title: "Regression Analysis on Car Specifications"
 author: "Luka Babić, Dominik Barukčić, Andrija Merlin, Ivan Skukan"
 date: "2024-01-11"
-output: pdf_document
+output: 
+  pdf_document:
+    fig_width: 5
+    fig_height: 3.5
 ---
 
 ```{r setup, include=FALSE}
@@ -322,7 +325,7 @@ H_1 &: \neg H0
 
 Provedimo test:
 
-```{r}
+```{r, fig.width=4,fig.height=3}
 require(nortest) #potrebna biblioteka
 
 for (continent in continents) {
