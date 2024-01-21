@@ -368,15 +368,15 @@ Prvi model koristi varijable: konjske snage, veličinu motora, broj cilindara te
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 # Pretvaranje kategoričkih varijabli u faktore
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
@@ -388,7 +388,7 @@ levels(data$engine_location)
 ```{r}
 # Izgradnja regresijskog modela
 # Ovaj model sastoji se od razlicitih karakteristika motora
-ec1_model <- lm(price ~ horsepower + engine_size + num_of_cylinders + fuel_system, data = data)
+ec1_model <- lm(price ~ horsepower + engine.size + num.of.cylinders + fuel.system, data = data)
 
 # Prikazivanje sažetka modela
 summary(model)
@@ -414,15 +414,15 @@ Drugi model koristi varijable: konjske snage, lokaciju motora, veličinu motora 
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 # Pretvaranje kategoričkih varijabli u faktore
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
@@ -434,7 +434,7 @@ levels(data$engine_location)
 ```{r}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
-model <- lm(price ~ horsepower + engine_location + engine_size  + engine_type , data = data)
+model <- lm(price ~ horsepower + engine_location + engine.size  + engine.type , data = data)
 
 # Prikazivanje sažetka modela
 summary(model)
@@ -460,15 +460,15 @@ Treći model koristi varijable: konjske snage, veličinu motora, tip motora, bro
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 # Pretvaranje kategoričkih varijabli u faktore
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
@@ -480,8 +480,8 @@ levels(data$engine_location)
 ```{r}
 # Izgradnja regresijskog modela
 # Ovaj model kombinira različite karakteristike motora
-model <- lm(price ~ horsepower + engine_size + as.factor(engine_type) + 
-             as.factor(num_of_cylinders) + bore + stroke + compression_ratio + peak_rpm, 
+model <- lm(price ~ horsepower + engine.size + as.factor(engine.type) + 
+             as.factor(num.of.cylinders) + bore + stroke + compression.ratio + peak.rpm, 
             data = data)
 
 # Prikazivanje sažetka modela
@@ -508,14 +508,14 @@ Sastavljen je model koji koristi samo jednu varijablu - marku automobila. Model 
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
@@ -551,14 +551,14 @@ Regresijski model sastavljen je od sljedećih metrika: potrošnja goriva u grads
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
@@ -569,7 +569,7 @@ data$continent <- as.factor(data$continent)
 #levels(data$make)
 #levels(data$aspiration)
 
-model <- lm(price ~ city_L_100km + highway_L_100km + peak_rpm, data = data)
+model <- lm(price ~ city.L.100km + highway.L.100km + peak.rpm, data = data)
 
 summary(model)
 # Residuals vs. Fitted plot
@@ -590,14 +590,14 @@ Model se sastoji od jedne varijable - konjskih snaga. Model je na prvi pogled pr
 
 ```{r}
 # Učitavanje podataka
-data <- read.csv("C:/Users/itsth/Downloads/car_specifications.csv")
+data <- read.csv("car_specifications.csv")
 
 data$make <- as.factor(data$make)
 data$aspiration <- as.factor(data$aspiration)
-data$num_of_doors <- as.factor(data$num_of_doors)
-data$body_style <- as.factor(data$body_style)
-data$drive_wheels <- as.factor(data$drive_wheels)
-data$engine_location <- as.factor(data$engine_location)
+data$num_of_doors <- as.factor(data$num.of.doors)
+data$body_style <- as.factor(data$body.style)
+data$drive_wheels <- as.factor(data$drive.wheels)
+data$engine_location <- as.factor(data$engine.location)
 data$fuel <- as.factor(data$fuel)
 data$country <- as.factor(data$country)
 data$continent <- as.factor(data$continent)
