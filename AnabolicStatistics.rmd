@@ -200,12 +200,15 @@ boxplot(data$highway.L.100km ~ data$continent)
 
 Već vidimo da je potrošnja u Europi u prosjeku veća nego druga dva kontinenta. Osim toga vidimo da je i disperzija nešto veća.
 
-**Uvjeti za ANOVA-u** Podsjetimo se. Želimo testirati ima li značajno odstupanje u sredinama potrošnje goriva na 3 kontinenta i zato prirodno biramo ANOVA-u. Kako bi proveli ANOVA test na podacima, prvo moramo biti sigurni da dani podaci zadovoljavaju sljedeće uvjete: 1. Normalnost 2. Nezavisnost 3. Homogenost varijanci
+#Uvjeti za ANOVA-u
+Podsjetimo se. Želimo testirati ima li značajno odstupanje u sredinama potrošnje goriva na 3 kontinenta i zato prirodno biramo ANOVA-u. Kako bi proveli ANOVA test na podacima, prvo moramo biti sigurni da dani podaci zadovoljavaju sljedeće uvjete: 1. Normalnost 2. Nezavisnost 3. Homogenost varijanci
 
-## Lillie
-
-**Testiranje normalnosti** Prvo ćemo proveti test normalnosti. Zanimaju nas tablice za potrošnju goriva u gradu i na autocesti za svaki kontinent. Koristit ćemo Lilliefors test koji se temelji na Kolmogorov-Smirnov testu i Q-Q plot za vizualizaciju. Postavljamo hipoteze: $$H0: Dani\ podaci\ za\ potrošnju\ goriva\ imaju\ normalnu\ distribuciju\\
-H1: \neg H0$$
+# Testiranje normalnosti
+Prvo ćemo proveti test normalnosti. Zanimaju nas tablice za potrošnju goriva u gradu i na autocesti za svaki kontinent. Koristit ćemo Lilliefors test koji se temelji na Kolmogorov-Smirnov testu i Q-Q plot za vizualizaciju. Postavljamo hipoteze: 
+$$\begin{aligned}
+H_0 &: Dani\ podaci\ za\ potrošnju\ goriva\ imaju\ normalnu\ distribuciju\\
+H_1 &: \neg H0
+\end{aligned}$$
 
 Provedimo test:
 
@@ -240,12 +243,60 @@ qqnorm(data$city.L.100km[data$continent == "Europe"],main = "Europe, cities")
 qqline(data$city.L.100km[data$continent == "Europe"])
 ```
 
-Budući da nemamo zadovoljen uvjet normalnosti, ne možemo koristit ANOVA-u.
+Iako KS test i Q-Q plotovi nedaju dobre izglede za normalnost, vidimo na plotovima da podaci u sredini približno prate fitted liniju. Za sada ćemo reći da je ovo 'dovoljno dobro' i nastaviti sa Bartlettovim testom, ali ćemo kasnije napraviti i Kruskal-Wallis test kako bi bili sigurni.
 
-**Kruskal-Wallis test** Okrećemo se alternativi ANOVA testa, Kruskal-Wallis test. To je neparametarski test pa ne trebamo da nam podaci prate određenu distribuciju. Jedini uvjet je da je broj podataka barem 5. Hipoteze se postavljaju na isti način kao u ANOVA-i.
+$$ \begin{aligned}
+  H_0 & : \sigma_1^2 = \sigma_2^2= \sigma_3^2 \\
+  H_1 & : \text{barem dvije varijance nisu iste}.
+\end{aligned} $$
 
-Hipoteze: $$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ kontinentima\ je\ jednaka\\
-H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$ Ovu istu hipotezu postavljamo za gradove i autoceste te zbog toga provodimo test dvaput.
+```{r}
+bartlettCity=bartlett.test(data$city.L.100km ~ data$continent)
+bartlettHighway = bartlett.test(data$highway.L.100km ~ data$continent)
+print(bartlettCity)
+print(bartlettHighway)
+
+for(continent in continents) {
+  print(var(data$highway.L.100km[data$continent == continent]))
+  print(var(data$city.L.100km[data$continent == continent]))
+}
+
+```
+Jedan test ima veliku p-vrijednost, drugi malu. Opet, ovo ne izgleda obečavajuće za ANOVA test ali za sad ćemo reći da je 'dovoljno dobro'.
+ANOVA hipoteze:
+$$\begin{aligned}
+H_0 &:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ kontinentima\ je\ jednaka\\
+H_1 &: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih
+\end{aligned}$$
+
+```{r}
+aC = aov(data$city.L.100km ~ data$continent)
+aH = aov(data$highway.L.100km ~ data$continent)
+
+summary(aC)
+print("============================================================")
+summary(aH)
+```
+Dobili smo male p-vrijednosti za oba testa. Ovo sugerira da postoje razlike u srednjim vrijednostima. Probajmo prilagoditi model:
+```{r}
+modelC = lm(data$city.L.100km ~ data$continent)
+summary(modelC)
+print("============================================================")
+modelH = lm(data$highway.L.100km ~ data$continent)
+summary(modelH)
+```
+Vidimo da smo dobili malu p-vrijednost, ali i mali R^2. Ovo sugerira da iako model ne objašnjava najbolje dane podatke, barem jedna nezavisna varijabla je statistički vezana vezana sa zavisnim.
+
+#Kruskal-Wallis test 
+Okrećemo se alternativi ANOVA testa, Kruskal-Wallis test. To je neparametarski test pa ne trebamo da nam podaci prate određenu distribuciju. Jedini uvjet je da je broj podataka barem 5. Hipoteze se postavljaju na isti način kao u ANOVA-i.
+
+Hipoteze:
+$$\begin{aligned}
+H_0 &:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ kontinentima\ je\ jednaka\\
+H_1 &: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih
+\end{aligned}$$
+Ovu istu hipotezu p
+Ovu istu hipotezu postavljamo za gradove i autoceste te zbog toga provodimo test dvaput.
 
 Provedimo Kruskal-Wallis test:
 
@@ -299,8 +350,11 @@ europeDataCity = list(west = westEuData$city.L.100km, northEuData$city.L.100km, 
 
 ```
 
-Hipoteze su na istu logiku: $$H0:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ podregijama\ je\ jednaka\\
-H1: Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih$$
+Hipoteze su na istu logiku: 
+$$\begin{aligned}
+H_0 &:\ Očekivana\ vrijednost\ potrošnje\ goriva\ po\ podregijama\ je\ jednaka\\
+H_1 & :Barem\ jedna\ očekivana\ vrijednost\ se\ razlikuje\ od\ ostalih
+\end{aligned}$$
 
 Provedimo testove:
 
